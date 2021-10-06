@@ -21,7 +21,7 @@ from .utility.flow import Flow
 
 class ConstructDragenPipeline(Flow):
     def __init__(self):
-        self.all_bam_file = {}
+        self.normals = {}
         self.profile = None
 
     def check_trimming(self, excel: dict, read_trimmer) -> dict:
@@ -34,12 +34,16 @@ class ConstructDragenPipeline(Flow):
             cmd["trim-adapter-read2"] = trim
         return cmd
 
-    def add_cnv(self, excel: dict, cmd: dict):
+    def add_cnv(self, excel: dict, cmd: dict) -> bool:
         tmp = self.profile["ref_parameters"]["cnvpanelofnormals"]
-        if excel[SHA_TRG_NAME] in tmp[excel["RefGenome"]]:
-            cmd["cnv-normals-list"] = tmp[excel["RefGenome"]][excel[SHA_TRG_NAME]]
-            cmd["cnv-target-bed"] = excel[SH_TARGET]
-            cmd["enable-cnv"] = "true"
+        if SHA_TRG_NAME not in excel or not excel[SHA_TRG_NAME]:
+            return False
+        if not excel[SHA_TRG_NAME] in tmp[excel["RefGenome"]]:
+            return False
+        cmd["cnv-normals-list"] = tmp[excel["RefGenome"]][excel[SHA_TRG_NAME]]
+        cmd["cnv-target-bed"] = excel[SH_TARGET]
+        cmd["enable-cnv"] = "true"
+        return True
 
     def command_with_trim(self, excel: dict, pipe_elem: str) -> dict:
         pipeline = excel.get("pipeline_parameters")
@@ -48,6 +52,18 @@ class ConstructDragenPipeline(Flow):
         trim_cmd = self.check_trimming(excel, cmd.get("read-trimmers"))
 
         return {**cmd, **trim_cmd}
+
+    def sample_pon(self, key: str, dryrun: bool, sample_dir: str, cmd: dict) -> None:
+        # create temporary cnv pon with normal added
+        add_normal = f"{self.normals[key]}.target.counts.gc-corrected.gz"
+        new_panel = f"{sample_dir}/logs/cnv_pon.txt"
+        if not dryrun:
+            with open(new_panel, 'w') as new_list:
+                with open(cmd["cnv-normals-list"], 'r') as old_list:
+                    for line in old_list.readlines():
+                        new_list.write(line)
+                new_list.write(add_normal)
+        cmd["cnv-normals-list"] = new_panel
 
     def constructor(self, excel: dict) -> Optional[List[str]]:
         self.profile = load_json(script_path("dragen_config.json"))["profile1"]
@@ -82,12 +98,11 @@ class ConstructDragenPipeline(Flow):
             else:
                 logging.info(f"{excel[SHA_RTYPE]}: executing normal_pipeline")
                 cmd_d = self.command_with_trim(excel, "normal_pipeline")
-                if SHA_TRG_NAME in excel and excel[SHA_TRG_NAME]:
-                    self.add_cnv(excel, cmd_d)
+                self.add_cnv(excel, cmd_d)
             # store bam file
-            self.all_bam_file[
+            self.normals[
                 f"{excel['Sample_Project']}/{excel['SampleID']}"
-            ] = f"../{excel['SampleID']}/{cmd_d['output-file-prefix']}.bam"
+            ] = f"../{excel['SampleID']}/{cmd_d['output-file-prefix']}"
             final_str = dragen_cli(cmd=cmd_d, excel=excel, scripts=scripts)
             return [final_str]
 
@@ -103,8 +118,7 @@ class ConstructDragenPipeline(Flow):
             else:
                 logging.info(f"{excel[SHA_RTYPE]}: executing tumor_pipeline")
                 cmd_d = self.command_with_trim(excel, "tumor_pipeline")
-                if SHA_TRG_NAME in excel and excel[SHA_TRG_NAME]:
-                    self.add_cnv(excel, cmd_d)
+                self.add_cnv(excel, cmd_d)
             final_str = dragen_cli(cmd=cmd_d, excel=excel, scripts=scripts)
             return [final_str]
 
@@ -114,6 +128,9 @@ class ConstructDragenPipeline(Flow):
                 excel, self.profile, f"{pipeline}_paired_variant_call"
             )
             cmd_d2 = CompositeCommands()
+            normal_prefix = (
+                f"{excel['Sample_Project']}/{excel['matching_normal_sample']}"
+            )
             if pipeline.startswith("umi"):
                 # step 1
                 logging.info(f"{excel[SHA_RTYPE]}: preparing umi alignment template")
@@ -131,19 +148,16 @@ class ConstructDragenPipeline(Flow):
                 logging.info(f"{excel[SHA_RTYPE]}: preparing tumor alignment template")
                 # step 1 tumor alignment
                 cmd_d1 = self.command_with_trim(excel, "tumor_alignment")
-                if SHA_TRG_NAME in excel and excel[SHA_TRG_NAME]:
-                    self.add_cnv(excel, cmd_d1)
+                if self.add_cnv(excel, cmd_d1):
                     cmd_d1["enable-map-align-output"] = "true"
+                    self.sample_pon(normal_prefix, excel["dry_run"], excel["fastq_dir"], cmd_d1)
                 final_str1 = dragen_cli(
                     cmd=cmd_d1, excel=excel, postf="alignment", scripts=scripts
                 )
                 arg_string.append(final_str1)
             # step 2 paired variant call
             logging.info(f"{excel[SHA_RTYPE]}: preparing paired variant call template")
-            bam_file_key = (
-                f"{excel['Sample_Project']}/{excel['matching_normal_sample']}"
-            )
-            pv_cmd = PairedVariantCommands(self.all_bam_file[bam_file_key], cmd_d1)
+            pv_cmd = PairedVariantCommands(f"{self.normals[normal_prefix]}.bam", cmd_d1)
             cmd_d2.add(base_cmd)
             cmd_d2.add(pv_cmd)
             final_str2 = dragen_cli(
