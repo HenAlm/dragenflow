@@ -97,21 +97,24 @@ def fastq_file(excel: dict, read_n: int, copy_file: bool = True) -> str:
 
 
 def move_fast_q(excel: dict, fastq_f: str) -> None:
-
+    if excel["dry_run"]:
+        return
     sample_sheet_path = Path(excel["file_path"]).absolute().parent
     path_to_fastq = sample_sheet_path / excel["Sample_Project"] / fastq_f
     destination_of_fastq = Path(excel["fastq_dir"])
     final_fastq_path = destination_of_fastq / fastq_f
-    if not excel["dry_run"]:
-        if path_to_fastq.exists():
-            # in case if file already exist in destination
-            if not final_fastq_path.exists():
-                shutil.move(str(path_to_fastq), str(destination_of_fastq))
-        elif not final_fastq_path.exists():
-            print("")
-            raise FileNotFoundError(
-                errno.ENOENT, os.strerror(errno.ENOENT), str(path_to_fastq)
-            )
+    if path_to_fastq.exists():
+        # in case if file already exist in destination
+        if not final_fastq_path.exists():
+            shutil.move(str(path_to_fastq), str(destination_of_fastq))
+        log_path = destination_of_fastq / "logs"
+        if not log_path.exists():
+            os.mkdir(str(log_path))
+    elif not final_fastq_path.exists():
+        print("")
+        raise FileNotFoundError(
+            errno.ENOENT, os.strerror(errno.ENOENT), str(path_to_fastq)
+        )
 
 
 def check_key(dct: dict, k: str, val: str) -> dict:
@@ -131,9 +134,9 @@ def dragen_cli(
     if scripts:
         pre_script = scripts["pre"]
         post_script = scripts["post"]
-        final_str = f"grun.py -n dragen-{excel['Sample_Name']}{postf} -L logs -q  dragen.q -c '{pre_script}\ndragen {default_str}\n{post_script}' "  # noqa: E501, B950
+        final_str = f"grun.py -n dragen-{excel['Sample_Name']}{postf} -L logs -q dragen.q -c '{pre_script}\ndragen {default_str}\n{post_script}' "  # noqa: E501, B950
     else:
-        final_str = f"grun.py -n dragen-{excel['Sample_Name']}{postf} -L logs -q  dragen.q -c 'dragen {default_str}'"  # noqa: E501, B950
+        final_str = f"grun.py -n dragen-{excel['Sample_Name']}{postf} -L logs -q dragen.q -c 'dragen {default_str}'"  # noqa: E501, B950
     return final_str
 
 
