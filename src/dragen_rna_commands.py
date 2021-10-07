@@ -18,7 +18,7 @@ class BaseDragenRnaCommand(Commands):
         self.template = template
         self.arg_registry = {
             "ref-dir": get_ref(self.excel, self.template),
-            "intermediate-results-dir": "/staging/intermeidate",
+            "intermediate-results-dir": "/staging/intermediate",
             "output-file-prefix": set_fileprefix(self.excel),
             "fastq-file1": fastq_file(self.excel, 1),
             "fastq-file2": fastq_file(self.excel, 2),
@@ -37,7 +37,7 @@ class BaseDragenRnaCommand(Commands):
             try:
                 cmd_dict[val] = self.arg_registry.get(val)
             except KeyError:
-                print(f"miising key {val}: in registry")
+                print(f"missing key {val}: in registry")
                 continue
         return cmd_dict
 
