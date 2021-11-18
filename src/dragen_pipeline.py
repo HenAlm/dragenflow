@@ -50,8 +50,15 @@ class ConstructDragenPipeline(Flow):
         base_cmd = BaseDragenCommand(excel, self.profile, f"{pipeline}_{pipe_elem}")
         cmd = base_cmd.construct_commands()
         trim_cmd = self.check_trimming(excel, cmd.get("read-trimmers"))
-
         return {**cmd, **trim_cmd}
+
+    def umi_pipeline(self, excel:dict, pipe_elem:str) -> dict:
+        pipeline = excel.get("pipeline_parameters")
+        cmd_base = BaseDragenCommand(
+            excel, self.profile, f"{pipeline}_{pipe_elem}"
+        )
+        cmd_base.set_umi_fastq(excel, False)
+        return cmd_base.construct_commands()
 
     def sample_pon(self, key: str, dryrun: bool, sample_dir: str, cmd: dict) -> None:
         # create temporary cnv pon with normal added
@@ -89,12 +96,7 @@ class ConstructDragenPipeline(Flow):
             # out put prefix paired = sample.s
             if pipeline.startswith("umi"):
                 logging.info(f"{excel[SHA_RTYPE]}: executing umi normal_pipeline")
-                pipeline = excel.get("pipeline_parameters")
-                cmd_base = BaseDragenCommand(
-                    excel, self.profile, f"{pipeline}_normal_pipeline"
-                )
-                cmd_base.set_umi_fastq(excel, False)
-                cmd_d = cmd_base.construct_commands()
+                cmd_d = self.umi_pipeline(excel, "normal_pipeline")
             else:
                 logging.info(f"{excel[SHA_RTYPE]}: executing normal_pipeline")
                 cmd_d = self.command_with_trim(excel, "normal_pipeline")
@@ -109,12 +111,7 @@ class ConstructDragenPipeline(Flow):
         elif excel[SHA_RTYPE] == "somatic_single":
             if pipeline.startswith("umi"):
                 logging.info(f"{excel[SHA_RTYPE]}: executing umi tumor_pipeline")
-                pipeline = excel.get("pipeline_parameters")
-                cmd_base = BaseDragenCommand(
-                    excel, self.profile, f"{pipeline}_tumor_pipeline"
-                )
-                cmd_base.set_umi_fastq(excel, True)
-                cmd_d = cmd_base.construct_commands()
+                cmd_d = self.umi_pipeline(excel, "tumor_pipeline")
             else:
                 logging.info(f"{excel[SHA_RTYPE]}: executing tumor_pipeline")
                 cmd_d = self.command_with_trim(excel, "tumor_pipeline")
@@ -134,12 +131,7 @@ class ConstructDragenPipeline(Flow):
             if pipeline.startswith("umi"):
                 # step 1
                 logging.info(f"{excel[SHA_RTYPE]}: preparing umi alignment template")
-                pipeline = excel.get("pipeline_parameters")
-                cmd_base = BaseDragenCommand(
-                    excel, self.profile, f"{pipeline}_tumor_alignment"
-                )
-                cmd_base.set_umi_fastq(excel, True)
-                cmd_d1 = cmd_base.construct_commands()
+                cmd_d1 = self.umi_pipeline(excel, "tumor_alignment")
                 final_str1 = dragen_cli(
                     cmd=cmd_d1, excel=excel, postf="alignment", scripts=scripts
                 )
