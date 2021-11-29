@@ -60,6 +60,7 @@ class BaseDragenCommand(Commands):
             self.arg_registry["fastq-file2"] = fastq_file(self.excel, 3)
         self.arg_registry["umi-fastq"] = fastq_file(self.excel, 2, False)
         self.arg_registry["umi-metrics-interval-file"] = excel[SH_TARGET]
+        self.arg_registry["vc-snp-error-cal-bed"] = excel[SH_TARGET]
         return
 
 
@@ -92,4 +93,8 @@ class PairedVariantCommands(Commands):
         cmd_dict["bam-input"] = self.normal_bam
         cmd_dict["tumor-bam-input"] = f"{self.tumor['output-file-prefix']}_tumor.bam"
         cmd_dict["output-file-prefix"] = f"{self.tumor['output-file-prefix']}.tn"
+        cmd_dict["vc-snp-error-cal-bed"] = self.tumor["vc-snp-error-cal-bed"]
         return cmd_dict
+
+    def add_error_cal(self, cal_bed:str) -> None:
+        self.tumor["vc-snp-error-cal-bed"] = cal_bed

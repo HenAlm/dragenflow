@@ -150,6 +150,7 @@ class ConstructDragenPipeline(Flow):
             # step 2 paired variant call
             logging.info(f"{excel[SHA_RTYPE]}: preparing paired variant call template")
             pv_cmd = PairedVariantCommands(f"{self.normals[normal_prefix]}.bam", cmd_d1)
+            pv_cmd.add_error_cal(excel[SH_TARGET])
             cmd_d2.add(base_cmd)
             cmd_d2.add(pv_cmd)
             final_str2 = dragen_cli(
