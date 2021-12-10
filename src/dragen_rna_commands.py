@@ -24,6 +24,7 @@ class BaseDragenRnaCommand(Commands):
             "fastq-file2": fastq_file(self.excel, 2),
             "RGID": set_rgid(self.excel),
             "RGISM": set_rgism(self.excel),
+            "annotation-file": set_gtf(excel,template),
         }
 
     def construct_commands(self) -> dict:

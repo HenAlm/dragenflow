@@ -66,6 +66,13 @@ def set_rgism(excel: dict) -> str:
     return rgism
 
 
+def set_gtf(excel: dict, template: dict) -> str:
+    ref = excel["RefGenome"]
+    if template["ref_parameters"]["RefGenome"][ref]["gtf"]:
+        return template["ref_parameters"]["RefGenome"][ref]["gtf"]
+    return ""
+
+
 def create_fastq_dir(excel: list, dry_run: bool = False) -> List[dict]:
     for row in excel:
         if row["pipeline"].lower() != "dragen":
