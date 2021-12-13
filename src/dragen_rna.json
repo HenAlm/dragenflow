@@ -1,23 +1,24 @@
-{"rna": {
-    "ref-dir": "{refgenome}",
-    "intermediate-results-dir": "{staging}",
-    "output-directory": ".",
-    "output-file-prefix": "{outprefix}",
-    "tumor-fastq1": "{read1}",
-    "tumor-fastq2": "{read2}",
-    "RGID-tumor": "{rgid}",
-    "RGSM-tumor": "{rgsm}",
-    "enable-map-align-output": "true",
-    "read-trimmers": "quality,polyg",
-    "trim-min-quality": 3,
-    "enable-sort": "true",
-    "enable-duplicate-marking": "true",
-    "enable-variant-caller": "true",
-    "annotation-file": "{gtf}",
-    "enable-rna-quantification": "true",
-    "rna-quantification-gc-bias": "true",
-    "enable-rna-gene-fusion": "true",
-
+{
+    "rna": {
+        "ref-dir": "{refgenome}",
+        "intermediate-results-dir": "{staging}",
+        "output-directory": ".",
+        "output-file-prefix": "{outprefix}",
+        "tumor-fastq1": "{read1}",
+        "tumor-fastq2": "{read2}",
+        "RGID-tumor": "{rgid}",
+        "RGSM-tumor": "{rgsm}",
+        "enable-map-align-output": "true",
+        "read-trimmers": "quality,polyg",
+        "trim-min-quality": 3,
+        "enable-sort": "true",
+        "enable-duplicate-marking": "true",
+        "enable-variant-caller": "true",
+        "annotation-file": "{gtf}",
+        "enable-rna-quantification": "true",
+        "rna-quantification-gc-bias": "true",
+        "enable-rna-gene-fusion": "true",
+    },
     "ref_parameters": {
         "RefGenome": {
             "GRCh38": {
@@ -25,5 +26,9 @@
                 "gtf": "path to gtf file"
             }
         }
+    },
+    "scripts" : {
+        "pre": "path to script",
+        "post": "path to script"
     }
-}}
+}

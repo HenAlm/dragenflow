@@ -13,9 +13,10 @@ class BaseDragenRnaCommand(Commands):
     Bade Dragen rna comands
     """
 
-    def __init__(self, excel: dict, template: dict) -> None:
+    def __init__(self, excel: dict, template: dict, seq_pipeline: str) -> None:
         self.excel = excel
         self.template = template
+        self.seq_pipeline = seq_pipeline
         self.arg_registry = {
             "ref-dir": get_ref(self.excel, self.template),
             "intermediate-results-dir": "/staging/intermediate",
@@ -29,7 +30,7 @@ class BaseDragenRnaCommand(Commands):
 
     def construct_commands(self) -> dict:
         # get the arg from json config filie
-        cmd_dict = self.template
+        cmd_dict = copy.deepcopy(self.template[self.seq_pipeline])
         # get the dict that needs to be filled in at runtime
         param_list = [i for i in cmd_dict if str(cmd_dict[i]).startswith("{")]
         if len(param_list) == 0:

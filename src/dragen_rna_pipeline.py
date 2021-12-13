@@ -8,9 +8,12 @@ from .utility.flow import Flow
 
 class ConstructRnaPipeline(Flow):
     def constructor(self, excel: dict) -> Optional[List[str]]:
-        self.profile = load_json(script_path("dragen_rna.json"))["rna"]
+        self.profile = load_json(script_path("dragen_rna.json"))
         logging.info("executing dragen rna command")
-        cmd_base = BaseDragenRnaCommand(excel, self.profile)
+        scripts = self.profile.get("scripts")
+        if excel.get("disable_scripts"):
+            scripts = None
+        cmd_base = BaseDragenRnaCommand(excel, self.profile, "rna")
         cmd = cmd_base.construct_commands()
-        final_str = dragen_cli(cmd=cmd, excel=excel)
+        final_str = dragen_cli(cmd=cmd, excel=excel, scripts=scripts)
         return [final_str]
