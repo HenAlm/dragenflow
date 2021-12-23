@@ -12,7 +12,7 @@ from .utility.commands import Commands
 
 class BaseDragenRnaCommand(Commands):
     """
-    Bade Dragen rna comands
+    Base Dragen rna comands
     """
 
     def __init__(self, excel: dict, template: dict, seq_pipeline: str) -> None:
