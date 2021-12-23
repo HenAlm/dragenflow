@@ -5,7 +5,7 @@ from src.utility.dragen_utility import (
     set_fileprefix,
     set_rgid,
     set_rgism,
-    set_gtf,
+    get_ref_parameter,
 )
 from .utility.commands import Commands
 
@@ -27,7 +27,8 @@ class BaseDragenRnaCommand(Commands):
             "fastq-file2": fastq_file(self.excel, 2),
             "RGID": set_rgid(self.excel),
             "RGISM": set_rgism(self.excel),
-            "annotation-file": set_gtf(excel,template),
+            "annotation-file": get_ref_parameter(excel,template,"gtf"),
+            "rna-filter-contig": get_ref_parameter(excel,template,"rrna-contig"),
         }
 
     def construct_commands(self) -> dict:

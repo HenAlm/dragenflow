@@ -17,7 +17,7 @@
         "enable-variant-caller": "true",
         "annotation-file": "{gtf}",
         "rrna-filter-enable": "true",
-        "rna-filter-contig": "chrUn_GL000220v1",
+        "rna-filter-contig": "{rna-contig}",
         "enable-rna-quantification": "true",
         "rna-quantification-gc-bias": "true",
         "enable-rna-gene-fusion": "true"
@@ -26,7 +26,8 @@
         "RefGenome": {
             "GRCh38": {
                 "ref-dir": "/staging/human/reference/hg38/uscs/hg38.fa.k_21.f_16.m_149_cnv",
-                "gtf": "path to gtf file"
+                "gtf": "path to gtf file",
+                "rrna-contig": "chrUn_GL000220v1"
             }
         }
     },

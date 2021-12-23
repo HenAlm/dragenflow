@@ -66,10 +66,10 @@ def set_rgism(excel: dict) -> str:
     return rgism
 
 
-def set_gtf(excel: dict, template: dict) -> str:
+def get_ref_parameter(excel: dict, template: dict, parameter:str) -> str:
     ref = excel["RefGenome"]
-    if template["ref_parameters"]["RefGenome"][ref]["gtf"]:
-        return template["ref_parameters"]["RefGenome"][ref]["gtf"]
+    if template["ref_parameters"]["RefGenome"][ref][parameter]:
+        return template["ref_parameters"]["RefGenome"][ref][parameter]
     return ""
 
 
