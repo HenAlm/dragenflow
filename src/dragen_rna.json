@@ -12,12 +12,15 @@
         "read-trimmers": "quality,polyg",
         "trim-min-quality": 3,
         "enable-sort": "true",
+        "enable-rna": "true",
         "enable-duplicate-marking": "true",
         "enable-variant-caller": "true",
         "annotation-file": "{gtf}",
+        "rrna-filter-enable": "true",
+        "rna-filter-contig": "chrUn_GL000220v1",
         "enable-rna-quantification": "true",
         "rna-quantification-gc-bias": "true",
-        "enable-rna-gene-fusion": "true",
+        "enable-rna-gene-fusion": "true"
     },
     "ref_parameters": {
         "RefGenome": {
