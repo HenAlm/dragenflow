@@ -1,9 +1,11 @@
+import copy
 from src.utility.dragen_utility import (
     fastq_file,
     get_ref,
     set_fileprefix,
     set_rgid,
     set_rgism,
+    set_gtf,
 )
 from .utility.commands import Commands
 
