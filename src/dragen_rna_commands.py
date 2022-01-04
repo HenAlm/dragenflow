@@ -28,7 +28,7 @@ class BaseDragenRnaCommand(Commands):
             "RGID": set_rgid(self.excel),
             "RGISM": set_rgism(self.excel),
             "annotation-file": get_ref_parameter(excel,template,"gtf"),
-            "rna-filter-contig": get_ref_parameter(excel,template,"rrna-contig"),
+            "rrna-filter-contig": get_ref_parameter(excel,template,"rrna-contig"),
         }
 
     def construct_commands(self) -> dict:
