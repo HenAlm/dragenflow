@@ -2,7 +2,7 @@ import logging
 from typing import List, Optional
 
 from .dragen_rna_commands import BaseDragenRnaCommand
-from .utility.dragen_utility import dragen_cli, load_json, script_path
+from .utility.dragen_utility import dragen_cli, load_json, script_path, adapter_trimming
 from .utility.flow import Flow
 
 
@@ -15,5 +15,6 @@ class ConstructRnaPipeline(Flow):
             scripts = None
         cmd_base = BaseDragenRnaCommand(excel, self.profile, "rna")
         cmd = cmd_base.construct_commands()
+        cmd.update(adapter_trimming(self.profile, excel, cmd.get("read-trimmers")))
         final_str = dragen_cli(cmd=cmd, excel=excel, scripts=scripts)
         return [final_str]

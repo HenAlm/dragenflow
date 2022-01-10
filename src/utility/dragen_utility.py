@@ -170,17 +170,30 @@ def basic_reader(path: str) -> list:
 
 def trim_options(excel: dict, template: dict) -> str:
     # check if adaptertrim exist in sample sheet
-    if excel.get("AdapterTrim"):
-        if excel["AdapterTrim"] == "truseq" or excel["AdapterTrim"] == "nextera":
-            return template["adapters"][excel["AdapterTrim"]]
-        elif excel["AdapterTrim"].startswith("/"):
-            return excel["AdapterTrim"]
-        else:
-            raise ValueError(
-                f"Cannot retrieve adapters for value: {excel['AdapterTrim']}"
-            )
-    else:
+    if not excel.get("AdapterTrim"):
         return ""
+    elif excel["AdapterTrim"] == "truseq" or excel["AdapterTrim"] == "nextera":
+        return template["adapters"][excel["AdapterTrim"]]
+    elif excel["AdapterTrim"].startswith("/"):
+        return excel["AdapterTrim"]
+    else:
+        raise ValueError(
+            f"Cannot retrieve adapters for value: {excel['AdapterTrim']}"
+        )
+
+
+def adapter_trimming(template: dict, excel: dict, read_trimmer: str) -> dict:
+    # take in read trimmers used and add adapter trimming if valid
+    trim = trim_options(excel, template)
+    cmd = {}
+    if trim:
+        if read_trimmer:
+            cmd["read-trimmers"] = read_trimmer + ",adapter"
+        else:
+            cmd["read-trimmers"] = "adapter"
+        cmd["trim-adapter-read1"] = trim
+        cmd["trim-adapter-read2"] = trim
+    return cmd
 
 
 def file_parse(path: str, head_identifier="Lane") -> List[dict]:
