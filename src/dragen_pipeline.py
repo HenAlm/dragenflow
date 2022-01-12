@@ -7,6 +7,7 @@ from .dragen_commands import (
 )
 from .utility.commands import CompositeCommands
 from .utility.dragen_utility import (
+    adapter_trimming,
     add_samplesheet_cols,
     check_target,
     dragen_cli,
@@ -25,16 +26,6 @@ class ConstructDragenPipeline(Flow):
         self.normals = {}
         self.profile = None
 
-    def check_trimming(self, excel: dict, read_trimmer) -> dict:
-        trim = trim_options(excel, self.profile)
-        cmd = {}
-        cmd["read-trimmers"] = read_trimmer
-        if trim:
-            cmd["read-trimmers"] = cmd["read-trimmers"] + ",adapter"
-            cmd["trim-adapter-read1"] = trim
-            cmd["trim-adapter-read2"] = trim
-        return cmd
-
     def add_cnv(self, excel: dict, cmd: dict) -> bool:
         tmp = self.profile["ref_parameters"]["cnvpanelofnormals"]
         if SHA_TRG_NAME not in excel or not excel[SHA_TRG_NAME]:
@@ -50,7 +41,7 @@ class ConstructDragenPipeline(Flow):
         pipeline = excel.get("pipeline_parameters")
         base_cmd = BaseDragenCommand(excel, self.profile, f"{pipeline}_{pipe_elem}")
         cmd = base_cmd.construct_commands()
-        trim_cmd = self.check_trimming(excel, cmd.get("read-trimmers"))
+        trim_cmd = adapter_trimming(self.profile, excel, cmd.get("read-trimmers"))
         return {**cmd, **trim_cmd}
 
     def umi_pipeline(self, excel:dict, pipe_elem:str, tumor:bool=False) -> dict:
