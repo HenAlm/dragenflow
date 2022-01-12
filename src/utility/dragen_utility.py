@@ -260,7 +260,7 @@ def check_target(excel: dict, targets: dict) -> None:
         return
     if excel[SH_TARGET].startswith("/"):
         return
-    if not targets[excel[SH_TARGET]]:
+    if not excel[SH_TARGET] in targets:
         raise ValueError(f"{SH_TARGET} value {excel[SH_TARGET]} not in json.")
     real_target = targets[excel[SH_TARGET]]
     excel[SHA_TRG_NAME] = excel[SH_TARGET]
