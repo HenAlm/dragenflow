@@ -7,6 +7,7 @@ from .dragen_commands import (
 )
 from .utility.commands import CompositeCommands
 from .utility.dragen_utility import (
+    add_samplesheet_cols,
     check_target,
     dragen_cli,
     load_json,
@@ -82,6 +83,7 @@ class ConstructDragenPipeline(Flow):
         check_target(
             excel, self.profile["ref_parameters"]["target"][excel["RefGenome"]]
         )
+        add_samplesheet_cols(excel)
 
         # no pipeline set, check if target to choose between exome and genome
         if not excel["pipeline_parameters"]:

@@ -284,3 +284,24 @@ def sort_list(excel: List[dict], sorting_col: str = SHA_RTYPE) -> List[dict]:
         reverse=True,
     )
     return sorted_list
+
+
+def add_samplesheet_cols(excel:dict, add_cols:list=None, text_dir:str=None) -> None:
+    # add given columns as json file into dir
+    data = dict()
+    if add_cols is None:
+        add_cols = ["comments","method"]
+    if text_dir is None:
+        text_dir = os.path.join(excel["fastq_dir"], 'logs')
+    outfile = os.path.join(text_dir, "samplesheet_text.json")
+    for i in add_cols:
+        # add to json cols: value
+        data[i] = excel[i]
+    # if not sample dir at this point, then dryrun ... don't do anything'
+    if not os.path.isdir(excel["fastq_dir"]):
+        return
+    # write dir/text.json
+    if not os.path.isdir(text_dir):
+        os.mkdir(text_dir)
+    with open(outfile, 'w') as fs:
+        json.dump(data,fs,sort_keys=True)
