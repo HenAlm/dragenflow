@@ -235,27 +235,36 @@
         "ref_parameters": {
             "RefGenome": {
                 "GRCh38": {
-                    "ref-dir": "/staging/human/reference/hg38/uscs/hg38.fa.k_21.f_16.m_149_cnv"
+                    "ref-dir": "reference path",
+                    "noiseprofile": "noise profile path"
+                },
+                "hg19": {
+                    "ref-dir": "reference path",
+                    "noiseprofile": "noise profile path"
                 }
             },
             "target": {
                 "GRCh38": {
-                    "finwes": "/fas/NGS/pipes/dragen/configs/targets/FINWES_targets_0001515.bed",
-                    "twist_comprehensive": "/fas/NGS/pipes/dragen/configs/targets/Twist_Core_Exome_RefSeq_targets_hg38.bed",
-                    "pan_cancer": "/fas/NGS/pipes/dragen/configs/targets/FIMM_pan_cancer_panel_hg38.bed"
+                    "target1": "bed file path",
+                    "target2": "bed file path"
+                },
+                "hg19": {
+                    "target2": "bed file path"
                 }
             },
-            "noiseprofile": "/fas/NGS/pipes/dragen/configs/noise_profile/WGS_hg38_v1.0_systematic_noise.bed",
             "cnvpanelofnormals": {
                 "GRCh38": {
-                    "twist_comprehensive": "/fas/NGS/pipes/dragen/configs/cnv_pon/hg38_twist_core_refseq.txt",
-                    "pan_cancer": "/fas/NGS/pipes/dragen/configs/cnv_pon/hg38_pancancer.txt"
+                    "target1": "panel path",
+                    "target2": "panel path"
+                },
+                "hg19": {
+                    "target2": "panel path"
                 }
             }
         },
         "adapters": {
-            "truseq": "/fas/NGS/pipes/dragen/configs/adapters/truseq.fasta",
-            "nextera": "/fas/NGS/pipes/dragen/configs/adapters/nextera.fasta"
+            "truseq": "truseq path",
+            "nextera": "nextera path"
         },
         "scripts" : {
             "pre": "path to script",

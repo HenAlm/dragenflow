@@ -7,6 +7,7 @@ from .utility.dragen_utility import (
     set_fileprefix,
     set_rgid,
     set_rgism,
+    get_ref_parameter,
     SH_TARGET,
 )
 
@@ -34,7 +35,7 @@ class BaseDragenCommand(Commands):
             "RGSM-tumor": set_rgism(self.excel),
             # depending on the use case this can be directly added to json-template file
             "intermediate-results-dir": "/staging/intermediate",
-            "vc-systematic-noise": template["ref_parameters"]["noiseprofile"],
+            "vc-systematic-noise": get_ref_parameter(self.excel,self.template,"noiseprofile"),
         }
 
     def construct_commands(self) -> dict:
