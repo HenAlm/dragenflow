@@ -10,6 +10,7 @@ from typing import List, Optional
 SHA_RTYPE = "_run_type"
 SHA_TRG_NAME = "_target_name"
 SH_TARGET = "TargetRegions"
+SH_PARAM = "pipeline_parameter"
 
 
 def custom_sort(val: str) -> float:
@@ -256,6 +257,10 @@ def run_type(excel: List[dict]) -> List[dict]:
 
 def check_target(excel: dict, targets: dict) -> None:
     if not excel[SH_TARGET]:
+        if excel[SH_PARAM] is "exome" or excel[SH_PARAM] is "umi":
+            raise ValueError(
+                f"No target defined for {excel[SH_PARAM]} type in {excel['SampleID']}."
+            )
         return
     if excel[SH_TARGET].startswith("/"):
         return
