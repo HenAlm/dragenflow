@@ -10,7 +10,7 @@ from typing import List, Optional
 SHA_RTYPE = "_run_type"
 SHA_TRG_NAME = "_target_name"
 SH_TARGET = "TargetRegions"
-SH_PARAM = "pipeline_parameter"
+SH_PARAM = "pipeline_parameters"
 
 
 def custom_sort(val: str) -> float:
