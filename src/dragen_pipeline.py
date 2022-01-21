@@ -13,6 +13,8 @@ from .utility.dragen_utility import (
     dragen_cli,
     load_json,
     script_path,
+    SH_PARAM,
+    SH_SAMPLE,
     SH_TARGET,
     SHA_RTYPE,
     SHA_TRG_NAME,
@@ -38,14 +40,14 @@ class ConstructDragenPipeline(Flow):
         return True
 
     def command_with_trim(self, excel: dict, pipe_elem: str) -> dict:
-        pipeline = excel.get("pipeline_parameters")
+        pipeline = excel.get(SH_PARAM)
         base_cmd = BaseDragenCommand(excel, self.profile, f"{pipeline}_{pipe_elem}")
         cmd = base_cmd.construct_commands()
         trim_cmd = adapter_trimming(self.profile, excel, cmd.get("read-trimmers"))
         return {**cmd, **trim_cmd}
 
     def umi_pipeline(self, excel:dict, pipe_elem:str, tumor:bool=False) -> dict:
-        pipeline = excel.get("pipeline_parameters")
+        pipeline = excel.get(SH_PARAM)
         cmd_base = BaseDragenCommand(
             excel, self.profile, f"{pipeline}_{pipe_elem}"
         )
@@ -77,12 +79,12 @@ class ConstructDragenPipeline(Flow):
         add_samplesheet_cols(excel)
 
         # no pipeline set, check if target to choose between exome and genome
-        if not excel["pipeline_parameters"]:
+        if not excel[SH_PARAM]:
             if excel[SH_TARGET]:
-                excel["pipeline_parameters"] = "exome"
+                excel[SH_PARAM] = "exome"
             else:
-                excel["pipeline_parameters"] = "genome"
-        pipeline = excel["pipeline_parameters"]
+                excel[SH_PARAM] = "genome"
+        pipeline = excel[SH_PARAM]
 
         if excel[SHA_RTYPE] == "germline":
             # out put prefix = samplename
@@ -96,8 +98,8 @@ class ConstructDragenPipeline(Flow):
                 self.add_cnv(excel, cmd_d)
             # store bam file
             self.normals[
-                f"{excel['Sample_Project']}/{excel['SampleID']}"
-            ] = f"../{excel['SampleID']}/{cmd_d['output-file-prefix']}"
+                f"{excel['Sample_Project']}/{excel[SH_SAMPLE]}"
+            ] = f"../{excel[SH_SAMPLE]}/{cmd_d['output-file-prefix']}"
             final_str = dragen_cli(cmd=cmd_d, excel=excel, scripts=scripts)
             return [final_str]
 
@@ -158,5 +160,5 @@ class ConstructDragenPipeline(Flow):
         else:
             logging.info(
                 f"No known pipeline run type, problem on \
-                    {excel['Sample_Project']}:{excel.get('SampleID')}, skipping"
+                    {excel['Sample_Project']}:{excel.get(SH_SAMPLE)}, skipping"
             )

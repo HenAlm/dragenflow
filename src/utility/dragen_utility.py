@@ -11,6 +11,7 @@ SHA_RTYPE = "_run_type"
 SHA_TRG_NAME = "_target_name"
 SH_TARGET = "TargetRegions"
 SH_PARAM = "pipeline_parameters"
+SH_SAMPLE = "SampleID"
 
 
 def custom_sort(val: str) -> float:
@@ -50,7 +51,7 @@ def get_ref(excel: dict, template: dict) -> str:
 
 
 def set_fileprefix(excel: dict) -> str:
-    sample_id = excel["SampleID"] if excel.get("SampleID") else excel["Sample_ID"]
+    sample_id = excel[SH_SAMPLE] if excel.get(SH_SAMPLE) else excel["Sample_ID"]
     return sample_id
 
 
@@ -63,7 +64,7 @@ def set_rgid(excel: dict) -> str:
 
 
 def set_rgism(excel: dict) -> str:
-    rgism = excel["SampleID"] if excel.get("SampleID") else excel["Sample_ID"]
+    rgism = excel[SH_SAMPLE] if excel.get(SH_SAMPLE) else excel["Sample_ID"]
     return rgism
 
 
@@ -79,7 +80,7 @@ def create_fastq_dir(excel: list, dry_run: bool = False) -> List[dict]:
         if row["pipeline"].lower() != "dragen":
             continue
         path = Path(row["file_path"]).absolute()
-        sample_id = row["SampleID"] if row.get("SampleID") else row["Sample_ID"]
+        sample_id = row[SH_SAMPLE] if row.get(SH_SAMPLE) else row["Sample_ID"]
         new_path = path.parent / row["Sample_Project"] / sample_id
         if not dry_run:
             new_path.mkdir(exist_ok=True)
@@ -218,7 +219,7 @@ def file_parse(path: str, head_identifier="Lane") -> List[dict]:
         for row in reader:
             # convert Sample_ID into SampleID
             if row.get("Sample_ID"):
-                row["SampleID"] = row.pop("Sample_ID")
+                row[SH_SAMPLE] = row.pop("Sample_ID")
             row["row_index"] = row_index
             row["file_path"] = path
             row_index += 1
@@ -259,7 +260,7 @@ def check_target(excel: dict, targets: dict) -> None:
     if not excel[SH_TARGET]:
         if excel[SH_PARAM] is "exome" or excel[SH_PARAM] is "umi":
             raise ValueError(
-                f"No target defined for {excel[SH_PARAM]} type in {excel['SampleID']}."
+                f"No target defined for {excel[SH_PARAM]} type in {excel[SH_SAMPLE]}."
             )
         return
     if excel[SH_TARGET].startswith("/"):
@@ -269,12 +270,13 @@ def check_target(excel: dict, targets: dict) -> None:
     real_target = targets[excel[SH_TARGET]]
     excel[SHA_TRG_NAME] = excel[SH_TARGET]
     excel[SH_TARGET] = real_target
+    return
 
 
 def check_sample(excel: List[dict], sample_id: str, sample_project: str) -> bool:
     # some implicit assumption here that needs to be rechecked
     for dt in excel:
-        if dt["SampleID"] == sample_id and dt["Sample_Project"] == sample_project:
+        if dt[SH_SAMPLE] == sample_id and dt["Sample_Project"] == sample_project:
             return True
         else:
             continue
