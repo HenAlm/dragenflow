@@ -39,6 +39,13 @@ class ConstructDragenPipeline(Flow):
         cmd["enable-cnv"] = "true"
         return True
 
+    def check_liquid_tumor(self, excel: dict) -> dict:
+        cmd = dict()
+        if excel["Is_tumor"] != "liquid":
+            return cmd
+        cmd["sv-enable-liquid-tumor-mode"] = "true"
+        return cmd
+
     def command_with_trim(self, excel: dict, pipe_elem: str) -> dict:
         pipeline = excel.get(SH_PARAM)
         base_cmd = BaseDragenCommand(excel, self.profile, f"{pipeline}_{pipe_elem}")
@@ -76,7 +83,8 @@ class ConstructDragenPipeline(Flow):
         check_target(
             excel, self.profile["ref_parameters"]["target"][excel["RefGenome"]]
         )
-        add_samplesheet_cols(excel)
+        if self.profile["samplesheet"]:
+            add_samplesheet_cols(excel,self.profile["samplesheet"])
 
         # no pipeline set, check if target to choose between exome and genome
         if not excel[SH_PARAM]:
@@ -111,6 +119,7 @@ class ConstructDragenPipeline(Flow):
                 logging.info(f"{excel[SHA_RTYPE]}: executing tumor_pipeline")
                 cmd_d = self.command_with_trim(excel, "tumor_pipeline")
                 self.add_cnv(excel, cmd_d)
+            cmd_d.update(self.check_liquid_tumor(excel))
             final_str = dragen_cli(cmd=cmd_d, excel=excel, scripts=scripts)
             return [final_str]
 
@@ -148,11 +157,10 @@ class ConstructDragenPipeline(Flow):
             pv_cmd.add_error_cal(excel[SH_TARGET])
             cmd_d2.add(base_cmd)
             cmd_d2.add(pv_cmd)
+            cmd_d=cmd_d2.construct_commands()
+            cmd_d.update(self.check_liquid_tumor(excel))
             final_str2 = dragen_cli(
-                cmd=cmd_d2.construct_commands(),
-                excel=excel,
-                postf="analysis",
-                scripts=scripts,
+                cmd=cmd_d, excel=excel, postf="analysis", scripts=scripts,
             )
             arg_string.append(final_str2)
             return arg_string
