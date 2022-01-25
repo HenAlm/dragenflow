@@ -269,6 +269,7 @@
         "scripts" : {
             "pre": "path to script",
             "post": "path to script"
-        }
+        },
+        "samplesheet": ["columnA"]
     }
 }
