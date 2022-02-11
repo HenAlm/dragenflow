@@ -20,6 +20,28 @@
             "enable-cnv": "true",
             "cnv-enable-self-normalization": "true"
         },
+        "genome_tumor_pipeline": {
+            "ref-dir": "{refgenome}",
+            "intermediate-results-dir": "{staging}",
+            "output-directory": ".",
+            "output-file-prefix": "{outprefix}",
+            "tumor-fastq1": "{read1}",
+            "tumor-fastq2": "{read2}",
+            "RGID-tumor": "{rgid}",
+            "RGSM-tumor": "{rgsm}",
+            "read-trimmers": "quality,polyg",
+            "trim-min-quality": 3,
+            "soft-read-trimmers": "none",
+            "enable-sort": "true",
+            "enable-duplicate-marking": "true",
+            "enable-variant-caller": "true",
+            "vc-enable-joint-detection": "true",
+            "vc-systematic-noise": "{noiseprofile}",
+            "enable-sv": "true",
+            "enable-cnv": "true",
+            "cnv-enable-self-normalization": "true",
+            "cnv-population-b-allele-vcf": "{pop_b_allele}"
+        },
         "genome_tumor_alignment": {
             "ref-dir": "{refgenome}",
             "intermediate-results-dir": "{staging}",
@@ -44,11 +66,12 @@
             "tumor-bam-input": "{tumorbam}",
             "enable-map-align": "false",
             "enable-variant-caller": "true",
+            "vc-enable-joint-detection": "true",
+            "vc-systematic-noise": "{noiseprofile}",
             "enable-sv": "true",
             "enable-cnv": "true",
-            "vc-enable-joint-detection": "true",
-            "cnv-normals-file": "{cnvpanelofnormals}",
-            "vc-systematic-noise": "{noiseprofile}"
+            "cnv-normal-cnv-vcf": "{normal}.cnv.vcf.gz",
+            "cnv-normal-b-allele-vcf": "{normal}.hard-filtered.vcf.gz"
         },
         "genome_paired_variant_call": {
             "ref-dir": "{refgenome}",
@@ -236,7 +259,8 @@
             "RefGenome": {
                 "GRCh38": {
                     "ref-dir": "reference path",
-                    "noiseprofile": "noise profile path"
+                    "noiseprofile": "noise profile path",
+                    "pop_b_allele": "pop_b_allele path"
                 },
                 "hg19": {
                     "ref-dir": "reference path",
