@@ -10,6 +10,7 @@
         "RGSM-tumor": "{rgsm}",
         "enable-map-align-output": "true",
         "read-trimmers": "quality,polyg",
+        "soft-read-trimmers": "none",
         "trim-min-quality": 3,
         "enable-sort": "true",
         "enable-rna": "true",

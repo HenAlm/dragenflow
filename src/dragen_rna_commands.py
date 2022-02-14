@@ -25,8 +25,8 @@ class BaseDragenRnaCommand(Commands):
             "output-file-prefix": set_fileprefix(self.excel),
             "tumor-fastq1": fastq_file(self.excel, 1),
             "tumor-fastq2": fastq_file(self.excel, 2),
-            "RGID": set_rgid(self.excel),
-            "RGISM": set_rgism(self.excel),
+            "RGID-tumor": set_rgid(self.excel),
+            "RGISM-tumor": set_rgism(self.excel),
             "annotation-file": get_ref_parameter(excel,template,"gtf"),
             "rrna-filter-contig": get_ref_parameter(excel,template,"rrna-contig"),
         }
