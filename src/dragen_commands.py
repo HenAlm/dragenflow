@@ -75,9 +75,7 @@ class TumorVariantCommands(Commands):
         self.tumor = tumor
 
     def construct_commands(self) -> dict:
-
         cmd_dict = {"tumor-bam-input": f"{self.tumor['output-file-prefix']}_tumor.bam"}
-
         return cmd_dict
 
 
