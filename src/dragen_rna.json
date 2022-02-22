@@ -26,18 +26,19 @@
     "ref_parameters": {
         "RefGenome": {
             "GRCh38": {
-                "ref-dir": "/staging/human/reference/hg38/uscs/hg38.fa.rna",
+                "ref-dir": "reference",
                 "gtf": "path to gtf file",
-                "rrna-contig": "chrUn_GL000220v1"
+                "rrna-contig": "contig name"
             }
         }
     },
     "adapters": {
-        "truseq": "/fas/NGS/pipes/dragen/configs/adapters/truseq.fasta",
-        "nextera": "/fas/NGS/pipes/dragen/configs/adapters/nextera.fasta"
+            "truseq": "truseq path",
+            "nextera": "nextera path"
     },
     "scripts" : {
         "pre": "path to script",
         "post": "path to script"
-    }
+    },
+    "samplesheet": ["columnA"]
 }

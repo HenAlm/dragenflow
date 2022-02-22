@@ -2,7 +2,9 @@ import logging
 from typing import List, Optional
 
 from .dragen_rna_commands import BaseDragenRnaCommand
-from .utility.dragen_utility import dragen_cli, load_json, script_path, adapter_trimming
+from .utility.dragen_utility import {
+    dragen_cli, load_json, script_path, adapter_trimming, add_samplesheet_cols
+}
 from .utility.flow import Flow
 
 
@@ -13,6 +15,8 @@ class ConstructRnaPipeline(Flow):
         scripts = self.profile.get("scripts")
         if excel.get("disable_scripts"):
             scripts = None
+        if self.profile["samplesheet"]:
+            add_samplesheet_cols(excel,self.profile["samplesheet"])
         cmd_base = BaseDragenRnaCommand(excel, self.profile, "rna")
         cmd = cmd_base.construct_commands()
         cmd.update(adapter_trimming(self.profile, excel, cmd.get("read-trimmers")))
