@@ -13,9 +13,11 @@ from .utility.dragen_utility import (
     dragen_cli,
     load_json,
     script_path,
+    SH_NORMAL,
     SH_PARAM,
     SH_SAMPLE,
     SH_TARGET,
+    SHA_NPATH,
     SHA_RTYPE,
     SHA_TRG_NAME,
     trim_options,
@@ -129,9 +131,10 @@ class ConstructDragenPipeline(Flow):
                 excel, self.profile, f"{pipeline}_paired_variant_call"
             )
             cmd_d2 = CompositeCommands()
-            normal_prefix = (
-                f"{excel['Sample_Project']}/{excel['matching_normal_sample']}"
-            )
+            normal_prefix = (f"{excel['Sample_Project']}/{excel[SH_NORMAL]}")
+            if excel[SHA_NPATH]:
+                normal_prefix = normal_prefix + "/EXTERNAL"
+                self.normals[normal_prefix] = (f"{excel[SHA_NPATH]}/{excel[SH_NORMAL]}")
             if pipeline.startswith("umi"):
                 # step 1
                 logging.info(f"{excel[SHA_RTYPE]}: preparing umi alignment template")

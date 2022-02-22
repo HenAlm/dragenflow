@@ -7,11 +7,13 @@ import shutil
 from typing import List, Optional
 
 # values for the samplesheet columns, SH_ for ones in file, SHA_ for added constructs
+SHA_NPATH = "_normal_sample_path"
 SHA_RTYPE = "_run_type"
 SHA_TRG_NAME = "_target_name"
-SH_TARGET = "TargetRegions"
+SH_NORMAL = "matching_normal_sample"
 SH_PARAM = "pipeline_parameters"
 SH_SAMPLE = "SampleID"
+SH_TARGET = "TargetRegions"
 
 
 def custom_sort(val: str) -> float:
@@ -223,6 +225,10 @@ def file_parse(path: str, head_identifier="Lane") -> List[dict]:
             row["row_index"] = row_index
             row["file_path"] = path
             row_index += 1
+            row[SHA_NPATH] = ""
+            if row[SH_NORMAL] and row[SH_NORMAL].startswith('/'):
+                row[SHA_NPATH] = row[SH_NORMAL].rstrip('/')
+                row[SH_NORMAL] = os.path.basename(row[SHA_NPATH])
 
         # Remove the pipeline that is not dragen
         # This must of be done before setting index, we need to preserve index
@@ -240,14 +246,16 @@ def run_type(excel: List[dict]) -> List[dict]:
             or dt["Is_tumor"].lower() == "no"
         ):
             dt[SHA_RTYPE] = "germline"
-        elif len(dt["Is_tumor"]) >= 1 and dt["matching_normal_sample"] == "":
+        elif len(dt["Is_tumor"]) >= 1 and dt[SH_NORMAL] == "":
             dt[SHA_RTYPE] = "somatic_single"
-        elif len(dt["Is_tumor"]) >= 1 and dt["matching_normal_sample"] != "":
-            sample_id = dt["matching_normal_sample"]
+        elif len(dt["Is_tumor"]) >= 1 and dt[SH_NORMAL] != "":
+            sample_id = dt[SH_NORMAL]
             sample_project = dt["Sample_Project"]
-            if check_sample(excel, sample_id, sample_project):
+            if check_sample(excel, sample_id, sample_project, dt[SHA_NPATH]):
                 dt[SHA_RTYPE] = "somatic_paired"
             else:
+                if dt[SHA_NPATH]:
+                    sample_id = f"{dt[SHA_NPATH]}/{sample_id}"
                 raise RuntimeError(
                     f"sample id {sample_id} doesn't exist at {dt['row_index']}"
                 )
@@ -273,13 +281,19 @@ def check_target(excel: dict, targets: dict) -> None:
     return
 
 
-def check_sample(excel: List[dict], sample_id: str, sample_project: str) -> bool:
+def check_sample(excel: List[dict], sample_id: str, sample_project: str, sample_dir:str) -> bool:
+    # if given path, check that it exists and that there is bam file
+    if sample_dir:
+        if not os.path.isdir(sample_dir):
+            return False
+        pref = os.path.basename(sample_dir)
+        if os.path.isfile(os.path.join(sample_dir, pref + ".bam")):
+            return True
+        return False
     # some implicit assumption here that needs to be rechecked
     for dt in excel:
         if dt[SH_SAMPLE] == sample_id and dt["Sample_Project"] == sample_project:
             return True
-        else:
-            continue
     return False
 
 
