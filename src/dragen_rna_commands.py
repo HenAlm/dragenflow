@@ -26,7 +26,7 @@ class BaseDragenRnaCommand(Commands):
             "tumor-fastq1": fastq_file(self.excel, 1),
             "tumor-fastq2": fastq_file(self.excel, 2),
             "RGID-tumor": set_rgid(self.excel),
-            "RGISM-tumor": set_rgism(self.excel),
+            "RGSM-tumor": set_rgism(self.excel),
             "annotation-file": get_ref_parameter(excel,template,"gtf"),
             "rrna-filter-contig": get_ref_parameter(excel,template,"rrna-contig"),
         }
