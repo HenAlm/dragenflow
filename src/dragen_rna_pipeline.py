@@ -2,9 +2,9 @@ import logging
 from typing import List, Optional
 
 from .dragen_rna_commands import BaseDragenRnaCommand
-from .utility.dragen_utility import {
+from .utility.dragen_utility import (
     dragen_cli, load_json, script_path, adapter_trimming, add_samplesheet_cols
-}
+)
 from .utility.flow import Flow
 
 

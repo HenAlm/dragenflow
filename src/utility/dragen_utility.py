@@ -226,7 +226,7 @@ def file_parse(path: str, head_identifier="Lane") -> List[dict]:
             row["file_path"] = path
             row_index += 1
             row[SHA_NPATH] = ""
-            if row[SH_NORMAL] and row[SH_NORMAL].startswith('/'):
+            if SH_NORMAL in row and row[SH_NORMAL] and row[SH_NORMAL].startswith('/'):
                 row[SHA_NPATH] = row[SH_NORMAL].rstrip('/')
                 row[SH_NORMAL] = os.path.basename(row[SHA_NPATH])
 
@@ -240,6 +240,8 @@ def file_parse(path: str, head_identifier="Lane") -> List[dict]:
 def run_type(excel: List[dict]) -> List[dict]:
 
     for dt in excel:
+        if dt["pipeline_parameters"] == "rna":
+            continue
         if (
             dt["Is_tumor"] == "0"
             or dt["Is_tumor"] == ""
