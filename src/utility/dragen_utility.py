@@ -241,6 +241,7 @@ def run_type(excel: List[dict]) -> List[dict]:
 
     for dt in excel:
         if dt["pipeline_parameters"] == "rna":
+            dt[SHA_RTYPE] = ""
             continue
         if (
             dt["Is_tumor"] == "0"
