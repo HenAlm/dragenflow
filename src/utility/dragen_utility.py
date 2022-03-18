@@ -72,7 +72,7 @@ def set_rgism(excel: dict) -> str:
 
 def get_ref_parameter(excel: dict, template: dict, parameter:str) -> str:
     ref = excel["RefGenome"]
-    if template["ref_parameters"]["RefGenome"][ref][parameter]:
+    if parameter in template["ref_parameters"]["RefGenome"][ref]:
         return template["ref_parameters"]["RefGenome"][ref][parameter]
     return ""
 
