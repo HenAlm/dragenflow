@@ -7,6 +7,7 @@ from src.dragen_pipeline import ConstructDragenPipeline
 from src.dragen_rna_pipeline import ConstructRnaPipeline
 from src.utility.dragen_utility import (
     basic_reader,
+    check_has_run,
     create_fastq_dir,
     file_parse,
     run_type,
@@ -71,10 +72,10 @@ class HandleFlow(object):
             if data["pipeline"].lower() == "dragen":
                 if data["pipeline_parameters"].lower() == "rna":
                     pipeline = "dragen_rna"
-                    logging.info("Preparing dragen rna pipeline \x1b[31;1m")
+                    logging.info("Preparing dragen rna pipeline")
                 else:
                     pipeline = "dragen_dna"
-                    logging.info("Preparing dragen dna pipeline \x1b[31;1m")
+                    logging.info("Preparing dragen dna pipeline")
                 chosen_pipeline = available_pipeline[pipeline]
                 flow_context = FlowConstructor(chosen_pipeline)
                 # skip if pipeline is not dragen
@@ -82,6 +83,11 @@ class HandleFlow(object):
                 data["disable_scripts"] = disable_scripts
                 logging.info("Creating dragen commands")
                 constructed_str = flow_context.construct_flow(data=data)
+                # contruct the commands first before checking as in case of paired sample
+                # this would allow normal sample to have done previously and still be used
+                if check_has_run(data):
+                    logging.info(f"Skipping {data['fastq_dir']} as already executed.")
+                    continue
                 # collect all executable command in a list
                 logging.info(f"Input dict:{data}")
                 for c in constructed_str:

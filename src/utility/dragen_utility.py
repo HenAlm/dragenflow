@@ -3,8 +3,10 @@ import errno
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 from typing import List, Optional
+import logging
 
 # values for the samplesheet columns, SH_ for ones in file, SHA_ for added constructs
 SHA_NPATH = "_normal_sample_path"
@@ -327,3 +329,32 @@ def add_samplesheet_cols(excel:dict, add_cols:list=None, text_dir:str=None) -> N
         os.mkdir(text_dir)
     with open(outfile, 'w') as fs:
         json.dump(data,fs,sort_keys=True)
+
+
+def check_has_run(excel:dict) -> bool:
+    # check if sample command has executed: first find jobfiles
+    jobfiles = []
+    logs = f"{excel['fastq_dir']}/logs"
+    if not os.path.isdir(logs):
+        return False
+    for fn in os.listdir(logs):
+        if fn.endswith('.job'):
+            jobfiles.append(fn)
+    if len(jobfiles) == 0:
+        return False
+    # then check prefixes from commands
+    prefix = []
+    for fn in jobfiles:
+        with open(f"{logs}/{fn}", 'r') as jobf:
+            for line in jobf.readlines():
+                if not line.startswith('dragen'):
+                    continue
+                m = re.search('--output-file-prefix (\S+)',line)
+                if not m:
+                    continue
+                prefix.append(m.group(1))
+    # finally check that all [prefix]-replay.json files exists
+    for i in prefix:
+        if not os.path.isfile(f"{excel['fastq_dir']}/{i}-replay.json"):
+            return False
+    return True
