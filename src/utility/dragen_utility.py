@@ -242,7 +242,7 @@ def file_parse(path: str, head_identifier="Lane") -> List[dict]:
 def run_type(excel: List[dict]) -> List[dict]:
 
     for dt in excel:
-        if dt["pipeline_parameters"] == "rna":
+        if dt[SH_PARAM] == "rna":
             dt[SHA_RTYPE] = ""
             continue
         if (
