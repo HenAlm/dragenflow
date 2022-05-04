@@ -16,7 +16,7 @@ SH_NORMAL = "matching_normal_sample"
 SH_PARAM = "pipeline_parameters"
 SH_SAMPLE = "SampleID"
 SH_TARGET = "TargetRegions"
-
+SH_TUMOR = "Is_this_tumor"
 
 def custom_sort(val: str) -> float:
 
@@ -246,14 +246,14 @@ def run_type(excel: List[dict]) -> List[dict]:
             dt[SHA_RTYPE] = ""
             continue
         if (
-            dt["Is_tumor"] == "0"
-            or dt["Is_tumor"] == ""
-            or dt["Is_tumor"].lower() == "no"
+            dt[SH_TUMOR] == "0"
+            or dt[SH_TUMOR] == ""
+            or dt[SH_TUMOR].lower() == "no"
         ):
             dt[SHA_RTYPE] = "germline"
-        elif len(dt["Is_tumor"]) >= 1 and dt[SH_NORMAL] == "":
+        elif len(dt[SH_TUMOR]) >= 1 and dt[SH_NORMAL] == "":
             dt[SHA_RTYPE] = "somatic_single"
-        elif len(dt["Is_tumor"]) >= 1 and dt[SH_NORMAL] != "":
+        elif len(dt[SH_TUMOR]) >= 1 and dt[SH_NORMAL] != "":
             sample_id = dt[SH_NORMAL]
             sample_project = dt["Sample_Project"]
             if check_sample(excel, sample_id, sample_project, dt[SHA_NPATH]):

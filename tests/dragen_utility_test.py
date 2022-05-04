@@ -10,6 +10,7 @@ from src.utility.dragen_utility import (
     load_json,
     run_type,
     set_rgism,
+    SH_TUMOR,
     SHA_RTYPE,
     trim_options,
 )
@@ -140,7 +141,7 @@ def test_trim_options(excel_dict, template_dict):
 
 
 @pytest.mark.parametrize(
-    "Is_tumor,expected,matching_normal_sample",
+    "Is_this_tumor,expected,matching_normal_sample",
     [
         ("0", "germline", ""),
         ("No", "germline", ""),
@@ -150,8 +151,8 @@ def test_trim_options(excel_dict, template_dict):
         ("Yes", "somatic_paired", "test_id"),
     ],
 )
-def test_run_type(excel_dict, Is_tumor, expected, matching_normal_sample):
-    excel_dict["Is_tumor"] = Is_tumor
+def test_run_type(excel_dict, Is_this_tumor, expected, matching_normal_sample):
+    excel_dict[SH_TUMOR] = Is_this_tumor
     excel_dict["matching_normal_sample"] = matching_normal_sample
     returned_excel = run_type([excel_dict])
     print(returned_excel)
@@ -159,13 +160,13 @@ def test_run_type(excel_dict, Is_tumor, expected, matching_normal_sample):
 
 
 @pytest.mark.parametrize(
-    "Is_tumor,expected,matching_normal_sample",
+    "Is_this_tumor,expected,matching_normal_sample",
     [
         ("Yes", RuntimeError, "test_id1"),
     ],
 )
-def test_run_type_error(excel_dict, Is_tumor, expected, matching_normal_sample):
-    excel_dict["Is_tumor"] = Is_tumor
+def test_run_type_error(excel_dict, Is_this_tumor, expected, matching_normal_sample):
+    excel_dict[SH_TUMOR] = Is_this_tumor
     excel_dict["matching_normal_sample"] = matching_normal_sample
     with pytest.raises(expected):
         run_type([excel_dict])

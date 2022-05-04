@@ -17,6 +17,7 @@ from .utility.dragen_utility import (
     SH_PARAM,
     SH_SAMPLE,
     SH_TARGET,
+    SH_TUMOR,
     SHA_NPATH,
     SHA_RTYPE,
     SHA_TRG_NAME,
@@ -43,7 +44,7 @@ class ConstructDragenPipeline(Flow):
 
     def check_liquid_tumor(self, excel: dict) -> dict:
         cmd = dict()
-        if excel["Is_tumor"] != "liquid":
+        if excel[SH_TUMOR] != "liquid":
             return cmd
         cmd["sv-enable-liquid-tumor-mode"] = "true"
         return cmd
