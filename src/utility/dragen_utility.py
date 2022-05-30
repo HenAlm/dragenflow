@@ -216,7 +216,7 @@ def file_parse(path: str, head_identifier="Lane") -> List[dict]:
             raise ValueError("Unable to determine header row")
 
         # if need to rewind, switch to DictReader, skip past header: inf.seek(0)
-        reader = csv.DictReader(inf, fieldnames)
+        reader = csv.DictReader(inf, fieldnames, restkey="__colmess")
         # Add the index before sorting
         row_index = 1
         reader = [val for val in reader]
@@ -224,6 +224,9 @@ def file_parse(path: str, head_identifier="Lane") -> List[dict]:
             # convert Sample_ID into SampleID
             if row.get("Sample_ID"):
                 row[SH_SAMPLE] = row.pop("Sample_ID")
+            # if mistakes in samplesheet
+            if row.get("__colmess"):
+                raise ValueError(f"Sample {row[SH_SAMPLE]} has more columns than header")
             row["row_index"] = row_index
             row["file_path"] = path
             row_index += 1
