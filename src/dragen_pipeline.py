@@ -8,12 +8,17 @@ from .dragen_commands import (
 from .utility.commands import CompositeCommands
 from .utility.dragen_utility import (
     adapter_trimming,
+    add_options,
     add_samplesheet_cols,
     check_target,
     dragen_cli,
     load_json,
     script_path,
+    trim_options,
+    OPT_T_ANALYSIS,
+    OPT_T_ALIGN,
     SH_NORMAL,
+    SH_OVERRIDE,
     SH_PARAM,
     SH_SAMPLE,
     SH_TARGET,
@@ -21,7 +26,6 @@ from .utility.dragen_utility import (
     SHA_NPATH,
     SHA_RTYPE,
     SHA_TRG_NAME,
-    trim_options,
 )
 from .utility.flow import Flow
 
@@ -111,6 +115,7 @@ class ConstructDragenPipeline(Flow):
             self.normals[
                 f"{excel['Sample_Project']}/{excel[SH_SAMPLE]}"
             ] = f"../{excel[SH_SAMPLE]}/{cmd_d['output-file-prefix']}"
+            cmd_d.update(add_options(excel[SH_OVERRIDE]))
             final_str = dragen_cli(cmd=cmd_d, excel=excel, scripts=scripts)
             return [final_str]
 
@@ -123,6 +128,7 @@ class ConstructDragenPipeline(Flow):
                 cmd_d = self.command_with_trim(excel, "tumor_pipeline")
                 self.add_cnv(excel, cmd_d)
             cmd_d.update(self.check_liquid_tumor(excel))
+            cmd_d.update(add_options(excel[SH_OVERRIDE]))
             final_str = dragen_cli(cmd=cmd_d, excel=excel, scripts=scripts)
             return [final_str]
 
@@ -140,6 +146,7 @@ class ConstructDragenPipeline(Flow):
                 # step 1
                 logging.info(f"{excel[SHA_RTYPE]}: preparing umi alignment template")
                 cmd_d1 = self.umi_pipeline(excel, "tumor_alignment", True)
+                cmd_d1.update(add_options(excel[SH_OVERRIDE],OPT_T_ALIGN))
                 final_str1 = dragen_cli(
                     cmd=cmd_d1, excel=excel, postf="alignment", scripts=scripts
                 )
@@ -151,6 +158,7 @@ class ConstructDragenPipeline(Flow):
                 if self.add_cnv(excel, cmd_d1):
                     cmd_d1["enable-map-align-output"] = "true"
                     self.sample_pon(normal_prefix, excel["dry_run"], excel["fastq_dir"], cmd_d1)
+                cmd_d1.update(add_options(excel[SH_OVERRIDE],OPT_T_ALIGN))
                 final_str1 = dragen_cli(
                     cmd=cmd_d1, excel=excel, postf="alignment", scripts=scripts
                 )
@@ -163,6 +171,7 @@ class ConstructDragenPipeline(Flow):
             cmd_d2.add(pv_cmd)
             cmd_d=cmd_d2.construct_commands()
             cmd_d.update(self.check_liquid_tumor(excel))
+            cmd_d.update(add_options(excel[SH_OVERRIDE],OPT_T_ANALYSIS))
             final_str2 = dragen_cli(
                 cmd=cmd_d, excel=excel, postf="analysis", scripts=scripts,
             )

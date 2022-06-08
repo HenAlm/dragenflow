@@ -13,10 +13,18 @@ SHA_NPATH = "_normal_sample_path"
 SHA_RTYPE = "_run_type"
 SHA_TRG_NAME = "_target_name"
 SH_NORMAL = "matching_normal_sample"
+SH_OVERRIDE = "override"
 SH_PARAM = "pipeline_parameters"
 SH_SAMPLE = "SampleID"
 SH_TARGET = "TargetRegions"
 SH_TUMOR = "Is_this_tumor"
+
+# additional options selection
+OPT_T_ALIGN = 'TUMOR_ALIGNMENT'
+OPT_T_ANALYSIS = 'TUMOR_ANALYSIS'
+OPTH_OPT = 'dragen option'
+OPTH_VALUE = 'option value'
+OPTH_SPEC = 'option specifier'
 
 def custom_sort(val: str) -> float:
 
@@ -361,3 +369,17 @@ def check_has_run(excel:dict) -> bool:
         if not os.path.isfile(f"{excel['fastq_dir']}/{i}-replay.json"):
             return False
     return True
+
+
+def add_options(opt_file:str, opt_target:str=None) -> dict:
+    # read additional/update options from external file
+    ret = dict()
+    if not opt_file:
+        return ret
+    with open(opt_file,'r') as optfs:
+        reader = csv.DictReader(optfs, dialect='excel-tab')
+        for row in reader:
+            if OPTH_OPT in row and row[OPTH_SPEC] and row[OPTH_SPEC] != opt_target:
+                continue
+            ret[row[OPTH_OPT]] = row[OPTH_VALUE]
+    return ret
