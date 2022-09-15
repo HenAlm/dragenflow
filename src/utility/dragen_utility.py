@@ -209,7 +209,7 @@ def adapter_trimming(template: dict, excel: dict, read_trimmer: str) -> dict:
     return cmd
 
 
-def file_parse(path: str, head_identifier="Lane") -> List[dict]:
+def file_parse(path: str, head_identifier="[Data]") -> List[dict]:
     # change the variable name
     with open(path, newline="", encoding="utf-8") as inf:
         reader = csv.reader(inf)
@@ -217,6 +217,7 @@ def file_parse(path: str, head_identifier="Lane") -> List[dict]:
         for row in reader:
             if row[0].startswith(head_identifier):
                 # if "" not in row:
+                row = reader.__next__()
                 fieldnames = row
                 break
         else:
