@@ -8,6 +8,7 @@ from .utility.dragen_utility import (
     set_rgid,
     set_rgism,
     get_ref_parameter,
+    SH_PARAM,
     SH_TARGET,
 )
 
@@ -56,11 +57,13 @@ class BaseDragenCommand(Commands):
         return cmd_dict2
 
     def set_umi_fastq(self, excel: dict, is_tumor: bool = False) -> None:
-        if is_tumor:
-            self.arg_registry["tumor-fastq2"] = fastq_file(self.excel, 3)
-        else:
-            self.arg_registry["fastq-file2"] = fastq_file(self.excel, 3)
-        self.arg_registry["umi-fastq"] = fastq_file(self.excel, 2, False)
+        # if normal umis, need to swap fastqs around
+        if excel[SH_PARAM] is "umi":
+            if is_tumor:
+                self.arg_registry["tumor-fastq2"] = fastq_file(self.excel, 3)
+            else:
+                self.arg_registry["fastq-file2"] = fastq_file(self.excel, 3)
+            self.arg_registry["umi-fastq"] = fastq_file(self.excel, 2, False)
         self.arg_registry["umi-metrics-interval-file"] = excel[SH_TARGET]
         self.arg_registry["vc-snp-error-cal-bed"] = excel[SH_TARGET]
         return

@@ -105,7 +105,7 @@ class ConstructDragenPipeline(Flow):
             # out put prefix = samplename
             # out put prefix paired = sample.s
             if pipeline.startswith("umi"):
-                logging.info(f"{excel[SHA_RTYPE]}: executing umi normal_pipeline")
+                logging.info(f"{excel[SHA_RTYPE]}: executing {pipeline} normal_pipeline")
                 cmd_d = self.umi_pipeline(excel, "normal_pipeline")
             else:
                 logging.info(f"{excel[SHA_RTYPE]}: executing normal_pipeline")
@@ -121,7 +121,7 @@ class ConstructDragenPipeline(Flow):
 
         elif excel[SHA_RTYPE] == "somatic_single":
             if pipeline.startswith("umi"):
-                logging.info(f"{excel[SHA_RTYPE]}: executing umi tumor_pipeline")
+                logging.info(f"{excel[SHA_RTYPE]}: executing {pipeline} tumor_pipeline")
                 cmd_d = self.umi_pipeline(excel, "tumor_pipeline", True)
             else:
                 logging.info(f"{excel[SHA_RTYPE]}: executing tumor_pipeline")
@@ -144,7 +144,7 @@ class ConstructDragenPipeline(Flow):
                 self.normals[normal_prefix] = (f"{excel[SHA_NPATH]}/{excel[SH_NORMAL]}")
             if pipeline.startswith("umi"):
                 # step 1
-                logging.info(f"{excel[SHA_RTYPE]}: preparing umi alignment template")
+                logging.info(f"{excel[SHA_RTYPE]}: preparing {pipeline} alignment template")
                 cmd_d1 = self.umi_pipeline(excel, "tumor_alignment", True)
                 cmd_d1.update(add_options(excel[SH_OVERRIDE],OPT_T_ALIGN))
                 final_str1 = dragen_cli(

@@ -283,7 +283,7 @@ def run_type(excel: List[dict]) -> List[dict]:
 
 def check_target(excel: dict, targets: dict) -> None:
     if not excel[SH_TARGET]:
-        if excel[SH_PARAM] is "exome" or excel[SH_PARAM] is "umi":
+        if excel[SH_PARAM] is "exome" or excel[SH_PARAM].startswith("umi"):
             raise ValueError(
                 f"No target defined for {excel[SH_PARAM]} type in {excel[SH_SAMPLE]}."
             )
