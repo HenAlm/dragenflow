@@ -58,7 +58,7 @@ class BaseDragenCommand(Commands):
 
     def set_umi_fastq(self, excel: dict, is_tumor: bool = False) -> None:
         # if normal umis, need to swap fastqs around
-        if excel[SH_PARAM] is "umi":
+        if excel[SH_PARAM] == "umi":
             if is_tumor:
                 self.arg_registry["tumor-fastq2"] = fastq_file(self.excel, 3)
             else:
