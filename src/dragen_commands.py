@@ -37,7 +37,8 @@ class BaseDragenCommand(Commands):
             # depending on the use case this can be directly added to json-template file
             "intermediate-results-dir": "/staging/intermediate",
             "vc-systematic-noise": get_ref_parameter(self.excel,self.template,"noiseprofile"),
-            "cnv-population-b-allele-vcf": get_ref_parameter(self.excel,self.template,"pop_b_allele")
+            "cnv-population-b-allele-vcf": get_ref_parameter(self.excel,self.template,"pop_b_allele"),
+            "sv-systematic-noise": get_ref_parameter(self.excel,self.template,"sv_noiseprofile")
         }
 
     def construct_commands(self) -> dict:
