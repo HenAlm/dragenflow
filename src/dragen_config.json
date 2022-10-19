@@ -57,22 +57,8 @@
             "soft-read-trimmers": "none",
             "enable-sort": "true",
             "enable-duplicate-marking": "true",
+            "enable-map-align-output": "true",
             "enable-variant-caller": "false"
-        },
-        "genome_tumor_variant_call": {
-            "ref-dir": "{refgenome}",
-            "intermediate-results-dir": "{staging}",
-            "output-directory": ".",
-            "output-file-prefix": "{outprefix}",
-            "tumor-bam-input": "{tumorbam}",
-            "enable-map-align": "false",
-            "enable-variant-caller": "true",
-            "vc-enable-joint-detection": "true",
-            "vc-systematic-noise": "{noiseprofile}",
-            "enable-sv": "true",
-            "enable-cnv": "true",
-            "cnv-normal-cnv-vcf": "{normal}.cnv.vcf.gz",
-            "cnv-normal-b-allele-vcf": "{normal}.hard-filtered.vcf.gz"
         },
         "genome_paired_variant_call": {
             "ref-dir": "{refgenome}",
@@ -83,10 +69,12 @@
             "bam-input": "{normalbam}",
             "enable-map-align": "false",
             "enable-variant-caller": "true",
+            "vc-enable-joint-detection": "true",
+            "vc-systematic-noise": "{noiseprofile}",
             "enable-sv": "true",
             "enable-cnv": "true",
-            "vc-enable-joint-detection": "true",
-            "cnv-normal-cnv-vcf": "{cnvfromnormal}"
+            "cnv-normal-cnv-vcf": "{normal}.cnv.vcf.gz",
+            "cnv-normal-b-allele-vcf": "{normal}.hard-filtered.vcf.gz"
         },
         "exome_normal_pipeline": {
             "ref-dir": "{refgenome}",
@@ -103,9 +91,8 @@
             "enable-sort": "true",
             "enable-duplicate-marking": "true",
             "enable-variant-caller": "true",
-            "enable-sv": "true",
-            "enable-cnv": "false",
             "vc-enable-joint-detection": "true",
+            "enable-sv": "true",
             "sv-exome": "true",
             "qc-coverage-reports-1": "full_res",
             "qc-coverage-region-1": "{TargetRegions}"
@@ -124,15 +111,14 @@
             "soft-read-trimmers": "none",
             "enable-sort": "true",
             "enable-duplicate-marking": "true",
-            "enable-map-align-output": "true",
-            "enable-variant-caller": "true",
             "qc-coverage-reports-1": "full_res",
             "qc-coverage-region-1": "{TargetRegions}",
+            "enable-variant-caller": "true",
+            "vc-enable-joint-detection": "true",
+            "vc-systematic-noise": "{noiseprofile}",
             "enable-sv": "true",
             "sv-exome": "true",
-            "sv-systematic-noise": "{sv_noiseprofile}",
-            "vc-enable-joint-detection": "true",
-            "vc-systematic-noise": "{noiseprofile}"
+            "sv-systematic-noise": "{sv_noiseprofile}"
         },
         "exome_tumor_alignment": {
             "ref-dir": "{refgenome}",
@@ -148,6 +134,7 @@
             "soft-read-trimmers": "none",
             "enable-sort": "true",
             "enable-duplicate-marking": "true",
+            "enable-map-align-output": "true",
             "enable-variant-caller": "false",
             "qc-coverage-reports-1": "full_res",
             "qc-coverage-region-1": "{TargetRegions}"
@@ -161,9 +148,9 @@
             "bam-input": "{normalbam}",
             "enable-map-align": "false",
             "enable-variant-caller": "true",
-            "enable-sv": "true",
-            "enable-cnv": "false",
             "vc-enable-joint-detection": "true",
+            "vc-systematic-noise": "{noiseprofile}",
+            "enable-sv": "true",
             "sv-exome": "true"
         },
         "umi_normal_pipeline": {
@@ -201,22 +188,22 @@
             "enable-map-align-output": "true",
             "enable-duplicate-marking": "false",
             "enable-variant-caller": "true",
+            "vc-enable-joint-detection": "true",
+            "vc-systematic-noise": "{noiseprofile}",
+            "vc-enable-umi-solid": "true",
+            "vc-snp-error-cal-bed": "{TargetRegions}",
             "enable-sv": "true",
             "sv-exome": "true",
             "sv-systematic-noise": "{sv_noiseprofile}",
-            "enable-cnv": "false",
-            "vc-enable-joint-detection": "true",
-            "vc-systematic-noise": "{noiseprofile}",
-            "qc-coverage-region-1": "{TargetRegions}",
             "umi-enable": "true",
             "umi-library-type": "random-simplex",
             "umi-min-supporting-reads": "1",
-            "vc-enable-umi-solid": "true",
-            "vc-snp-error-cal-bed": "{TargetRegions}",
             "umi-source": "fastq",
             "umi-fastq": "{umifastq}",
             "umi-metrics-interval-file": "{TargetRegions}",
-            "umi-correction-scheme": "random"
+            "umi-correction-scheme": "random",
+            "qc-coverage-reports-1": "full_res",
+            "qc-coverage-region-1": "{TargetRegions}"
         },
         "umi_tumor_alignment": {
             "ref-dir": "{refgenome}",
@@ -231,15 +218,15 @@
             "enable-map-align-output": "true",
             "enable-duplicate-marking": "false",
             "enable-variant-caller": "false",
-            "qc-coverage-reports-1": "full_res",
-            "qc-coverage-region-1": "{TargetRegions}",
             "umi-enable": "true",
             "umi-library-type": "random-simplex",
             "umi-min-supporting-reads": "1",
             "umi-source": "fastq",
             "umi-fastq": "{umifastq}",
             "umi-metrics-interval-file": "{TargetRegions}",
-            "umi-correction-scheme": "random"
+            "umi-correction-scheme": "random",
+            "qc-coverage-reports-1": "full_res",
+            "qc-coverage-region-1": "{TargetRegions}"
         },
         "umi_paired_variant_call": {
             "ref-dir": "{refgenome}",
@@ -250,12 +237,13 @@
             "bam-input": "{normalbam}",
             "enable-map-align": "false",
             "enable-variant-caller": "true",
+            "vc-enable-joint-detection": "true",
             "vc-enable-umi-solid": "true",
             "vc-snp-error-cal-bed": "{TargetRegions}",
+            "vc-systematic-noise": "{noiseprofile}",
             "enable-sv": "true",
             "sv-exome": "true",
-            "enable-cnv": "false",
-            "vc-enable-joint-detection": "true"
+            "enable-cnv": "false"
         },
         "umi_duplex_normal_pipeline": {
             "ref-dir": "{refgenome}",
@@ -269,15 +257,15 @@
             "enable-sort": "true",
             "enable-map-align-output": "true",
             "enable-duplicate-marking": "false",
-            "qc-coverage-reports-1": "full_res",
-            "qc-coverage-region-1": "{TargetRegions}",
             "umi-enable": "true",
             "umi-library-type": "random-duplex",
             "umi-min-supporting-reads": "2",
             "umi-source": "fastq",
             "umi-fastq": "{umifastq}",
             "umi-metrics-interval-file": "{TargetRegions}",
-            "umi-correction-scheme": "random"
+            "umi-correction-scheme": "random",
+            "qc-coverage-reports-1": "full_res",
+            "qc-coverage-region-1": "{TargetRegions}"
         },
         "umi_duplex_tumor_pipeline": {
             "ref-dir": "{refgenome}",
@@ -292,22 +280,22 @@
             "enable-map-align-output": "true",
             "enable-duplicate-marking": "false",
             "enable-variant-caller": "true",
-            "enable-sv": "true",
-            "sv-exome": "true",
-            "sv-systematic-noise": "{sv_noiseprofile}",
-            "enable-cnv": "false",
             "vc-enable-joint-detection": "true",
             "vc-systematic-noise": "{noiseprofile}",
             "vc-enable-umi-solid": "true",
             "vc-snp-error-cal-bed": "{TargetRegions}",
-            "qc-coverage-region-1": "{TargetRegions}",
+            "enable-sv": "true",
+            "sv-exome": "true",
+            "sv-systematic-noise": "{sv_noiseprofile}",
             "umi-enable": "true",
             "umi-library-type": "random-duplex",
             "umi-min-supporting-reads": "2",
             "umi-source": "qname",
             "umi-metrics-interval-file": "{TargetRegions}",
             "umi-correction-scheme": "random",
-            "umi-emit-multiplicity": "both"
+            "umi-emit-multiplicity": "both",
+            "qc-coverage-reports-1": "full_res",
+            "qc-coverage-region-1": "{TargetRegions}"
         },
         "umi_duplex_tumor_alignment": {
             "ref-dir": "{refgenome}",
@@ -322,14 +310,14 @@
             "enable-map-align-output": "true",
             "enable-duplicate-marking": "false",
             "enable-variant-caller": "false",
-            "qc-coverage-reports-1": "full_res",
-            "qc-coverage-region-1": "{TargetRegions}",
             "umi-enable": "true",
             "umi-library-type": "random-duplex",
             "umi-min-supporting-reads": "2",
             "umi-source": "qname",
             "umi-metrics-interval-file": "{TargetRegions}",
-            "umi-correction-scheme": "random"
+            "umi-correction-scheme": "random",
+            "qc-coverage-reports-1": "full_res",
+            "qc-coverage-region-1": "{TargetRegions}"
         },
         "umi_duplex_paired_variant_call": {
             "ref-dir": "{refgenome}",
@@ -342,17 +330,18 @@
             "enable-variant-caller": "true",
             "vc-enable-umi-solid": "true",
             "vc-snp-error-cal-bed": "{TargetRegions}",
+            "vc-enable-joint-detection": "true",
+            "vc-systematic-noise": "{noiseprofile}",
             "enable-sv": "true",
-            "sv-exome": "true",
-            "enable-cnv": "false",
-            "vc-enable-joint-detection": "true"
+            "sv-exome": "true"
         },
         "ref_parameters": {
             "RefGenome": {
                 "GRCh38": {
                     "ref-dir": "reference path",
                     "noiseprofile": "noise profile path",
-                    "pop_b_allele": "pop_b_allele path"
+                    "pop_b_allele": "pop_b_allele path",
+                    "sv_noiseprofile": "structural variant noise profile path"
                 },
                 "hg19": {
                     "ref-dir": "reference path",
@@ -386,6 +375,6 @@
             "pre": "path to script",
             "post": "path to script"
         },
-        "samplesheet": ["columnA"]
+        "samplesheet": ["list is columns","in samplesheet","saved as json file"]
     }
 }
