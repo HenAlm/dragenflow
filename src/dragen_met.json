@@ -1,0 +1,76 @@
+{
+    "methylation": {
+        "ref-dir": "{refgenome}",
+        "intermediate-results-dir": "{staging}",
+        "output-directory": ".",
+        "output-file-prefix": "{outprefix}",
+        "fastq-file1": "{read1}",
+        "fastq-file2": "{read2}",
+        "RGID": "{rgid}",
+        "RGSM": "{rgsm}",
+        "enable-map-align-output": "true",
+        "read-trimmers": "quality,polyg",
+        "soft-read-trimmers": "none",
+        "trim-min-quality": 3,
+        "enable-methylation-calling": "true",
+        "methylation-protocol": "directional",
+        "methylation-generate-cytosine-report": "true",
+        "methylation-generate-mbias-report": "true",
+        "methylation-compress-cx-report": "true",
+        "enable-sort": "true",
+        "enable-duplicate-marking": "true",
+        "enable-cnv": "true",
+        "cnv-enable-self-normalization": "true",
+        "enable-sv": "true"
+    },
+    "methylation_target": {
+        "ref-dir": "{refgenome}",
+        "intermediate-results-dir": "{staging}",
+        "output-directory": ".",
+        "output-file-prefix": "{outprefix}",
+        "fastq-file1": "{read1}",
+        "fastq-file2": "{read2}",
+        "RGID": "{rgid}",
+        "RGSM": "{rgsm}",
+        "enable-map-align-output": "true",
+        "read-trimmers": "quality,polyg",
+        "soft-read-trimmers": "none",
+        "trim-min-quality": 3,
+        "enable-methylation-calling": "true",
+        "methylation-protocol": "directional",
+        "methylation-generate-cytosine-report": "true",
+        "methylation-generate-mbias-report": "true",
+        "methylation-compress-cx-report": "true",
+        "enable-sort": "true",
+        "enable-duplicate-marking": "true",
+        "enable-sv": "true",
+        "sv-exome": "true",
+        "qc-coverage-reports-1": "full_res",
+        "qc-coverage-region-1": "{TargetRegions}"
+    },
+    "ref_parameters": {
+        "RefGenome": {
+            "GRCh38": {
+                "ref-dir": "reference"
+            }
+        },
+        "target": {
+            "GRCh38": {
+                "target1": "bed file path",
+                "target2": "bed file path"
+            },
+            "hg19": {
+                "target2": "bed file path"
+            }
+        }
+    },
+    "adapters": {
+            "truseq": "truseq path",
+            "nextera": "nextera path"
+    },
+    "scripts" : {
+        "pre": "path to script",
+        "post": "path to script"
+    },
+    "samplesheet": ["columnA"]
+}

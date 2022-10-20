@@ -4,6 +4,7 @@ from typing import List
 
 from src.utility.flow import FlowConstructor
 from src.dragen_pipeline import ConstructDragenPipeline
+from src.dragen_met_pipeline import ConstructMetPipeline
 from src.dragen_rna_pipeline import ConstructRnaPipeline
 from src.utility.dragen_utility import (
     basic_reader,
@@ -12,12 +13,14 @@ from src.utility.dragen_utility import (
     file_parse,
     run_type,
     sort_list,
+    SH_PARAM,
 )
 
 # register flows/pipeline
 available_pipeline = {
     "dragen_dna": ConstructDragenPipeline(),
     "dragen_rna": ConstructRnaPipeline(),
+    "dragen_met": ConstructMetPipeline(),
 }
 
 logging.basicConfig(filename="app.log", filemode="w", level=logging.DEBUG)
@@ -70,9 +73,12 @@ class HandleFlow(object):
         # flow_context = FlowConstructor(chosen_pipeline)
         for data in data_file:
             if data["pipeline"].lower() == "dragen":
-                if data["pipeline_parameters"].lower() == "rna":
+                if data[SH_PARAM].startswith("rna"):
                     pipeline = "dragen_rna"
                     logging.info("Preparing dragen rna pipeline")
+                elif data[SH_PARAM].startswith("methylation"):
+                    pipeline = "dragen_met"
+                    logging.info("Preparing dragen methylation pipeline")
                 else:
                     pipeline = "dragen_dna"
                     logging.info("Preparing dragen dna pipeline")
