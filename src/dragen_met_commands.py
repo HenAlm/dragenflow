@@ -13,7 +13,7 @@ from .utility.commands import Commands
 
 class BaseDragenMetCommand(Commands):
     """
-    Base Dragen rna comands
+    Base Dragen methylation comands
     """
 
     def __init__(self, excel: dict, template: dict, seq_pipeline: str) -> None:
@@ -47,10 +47,10 @@ class BaseDragenMetCommand(Commands):
         return cmd_dict
 
 
-#class ExtraRnaCommands(Commands):
-    #"""
-    #Custom Rna command specific certain instane
-    #"""
+#class ExtraMetCommands(Commands):
+    #
+    #Custom met command specific certain instane
+    #
 
     #def construct_commands(self) -> dict:
         #extra_cmd_dict = {}
