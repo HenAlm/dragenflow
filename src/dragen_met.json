@@ -65,8 +65,8 @@
         }
     },
     "adapters": {
-            "truseq": "truseq path",
-            "nextera": "nextera path"
+        "truseq": "truseq path",
+        "nextera": "nextera path"
     },
     "scripts" : {
         "pre": "path to script",
