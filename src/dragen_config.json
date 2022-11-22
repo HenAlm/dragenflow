@@ -286,7 +286,6 @@
             "vc-snp-error-cal-bed": "{TargetRegions}",
             "enable-sv": "true",
             "sv-exome": "true",
-            "sv-systematic-noise": "{sv_noiseprofile}",
             "umi-enable": "true",
             "umi-library-type": "random-duplex",
             "umi-min-supporting-reads": "2",
@@ -316,6 +315,7 @@
             "umi-source": "qname",
             "umi-metrics-interval-file": "{TargetRegions}",
             "umi-correction-scheme": "random",
+            "umi-emit-multiplicity": "both",
             "qc-coverage-reports-1": "full_res",
             "qc-coverage-region-1": "{TargetRegions}"
         },
