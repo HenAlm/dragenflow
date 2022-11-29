@@ -51,6 +51,7 @@ class ConstructDragenPipeline(Flow):
         if excel[SH_TUMOR] != "liquid":
             return cmd
         cmd["sv-enable-liquid-tumor-mode"] = "true"
+        cmd["vc-enable-liquid-tumor-mode"] = "true"
         if cmd["vc-enable-umi-solid"] == "true":
             cmd["vc-enable-umi-solid"] = "false"
             cmd["vc-enable-umi-liquid"] = "true"
