@@ -9,6 +9,7 @@ from typing import List, Optional
 import logging
 
 # values for the samplesheet columns, SH_ for ones in file, SHA_ for added constructs
+SHA_INDEX = 'row_index'
 SHA_NPATH = "_normal_sample_path"
 SHA_RTYPE = "_run_type"
 SHA_TRG_NAME = "_target_name"
@@ -72,7 +73,7 @@ def set_rgid(excel: dict) -> str:
     flow_cell_id = get_flow_cell(sample_sheet_path)
     if excel.get("Lane"):
         flow_cell_id = f"{flow_cell_id}-{excel.get('Lane')}"
-    return f"{flow_cell_id}-{excel['row_index']}"
+    return f"{flow_cell_id}-{excel[SHA_INDEX]}"
 
 
 def set_rgism(excel: dict) -> str:
@@ -252,9 +253,8 @@ def file_parse(path: str, head_identifier="[Data]") -> List[dict]:
 
 
 def run_type(excel: List[dict]) -> List[dict]:
-
     for dt in excel:
-        if dt[SH_PARAM] == "rna":
+        if dt[SH_PARAM] == "rna" or dt[SH_PARAM].startswith("methylation"):
             dt[SHA_RTYPE] = ""
             continue
         if (
@@ -265,8 +265,12 @@ def run_type(excel: List[dict]) -> List[dict]:
             dt[SHA_RTYPE] = "germline"
         elif len(dt[SH_TUMOR]) >= 1 and dt[SH_NORMAL] == "":
             dt[SHA_RTYPE] = "somatic_single"
+            if dt[SH_TUMOR] == "liquid" and dt[SH_NORMAL] == "":
+                raise RuntimeError(
+                    f"Liquid mode needs normal sample in {dt[SH_SAMPLE]} at {dt[SHA_INDEX]}"
+                )
         elif len(dt[SH_TUMOR]) >= 1 and dt[SH_NORMAL] != "":
-            sample_id = dt[SH_NORMAL]
+            sample_id = dt[SH_SAMPLE]
             sample_project = dt["Sample_Project"]
             if check_sample(excel, sample_id, sample_project, dt[SHA_NPATH]):
                 dt[SHA_RTYPE] = "somatic_paired"
@@ -274,10 +278,10 @@ def run_type(excel: List[dict]) -> List[dict]:
                 if dt[SHA_NPATH]:
                     sample_id = f"{dt[SHA_NPATH]}/{sample_id}"
                 raise RuntimeError(
-                    f"sample id {sample_id} doesn't exist at {dt['row_index']}"
+                    f"sample id {sample_id} doesn't exist at {dt[SHA_INDEX]}"
                 )
         else:
-            raise ValueError(f"invalid entry at index {dt['row_index']}")
+            raise ValueError(f"invalid entry at index {dt[SHA_INDEX]}")
     return excel
 
 

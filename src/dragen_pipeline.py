@@ -52,9 +52,8 @@ class ConstructDragenPipeline(Flow):
             return cmd
         cmd["sv-enable-liquid-tumor-mode"] = "true"
         cmd["vc-enable-liquid-tumor-mode"] = "true"
-        if cmd["vc-enable-umi-solid"] == "true":
+        if "vc-enable-umi-solid" in cmd:
             cmd["vc-enable-umi-solid"] = "false"
-            cmd["vc-enable-umi-liquid"] = "true"
         return cmd
 
     def command_with_trim(self, excel: dict, pipe_elem: str) -> dict:
