@@ -17,6 +17,7 @@ SH_NORMAL = "matching_normal_sample"
 SH_OVERRIDE = "override"
 SH_PARAM = "pipeline_parameters"
 SH_SAMPLE = "SampleID"
+SH_SM_PROJ = 'Sample_Project'
 SH_TARGET = "TargetRegions"
 SH_TUMOR = "Is_this_tumor"
 
@@ -28,14 +29,12 @@ OPTH_VALUE = 'option value'
 OPTH_SPEC = 'option specifier'
 
 def custom_sort(val: str) -> float:
-
     rank = 0.0
     if len(str(val)) > 1:
         if val[0] == "N":
             rank = float(val[-1]) - 0.5
         if val[0] == "T":
             rank = float(val[-1])
-
     return rank
 
 
@@ -45,7 +44,6 @@ def script_path(filename: str) -> str:
     This allows the file to be launched from any
     directory.
     """
-
     filepath = os.path.join(os.path.dirname(__file__))
     config_path = os.path.join(filepath, "..")
     return os.path.join(config_path, filename)
@@ -94,7 +92,7 @@ def create_fastq_dir(excel: list, dry_run: bool = False) -> List[dict]:
             continue
         path = Path(row["file_path"]).absolute()
         sample_id = row[SH_SAMPLE] if row.get(SH_SAMPLE) else row["Sample_ID"]
-        new_path = path.parent / row["Sample_Project"] / sample_id
+        new_path = path.parent / row[SH_SM_PROJ] / sample_id
         if not dry_run:
             new_path.mkdir(exist_ok=True)
         row["fastq_dir"] = new_path
@@ -103,9 +101,8 @@ def create_fastq_dir(excel: list, dry_run: bool = False) -> List[dict]:
 
 
 def fastq_file(excel: dict, read_n: int, copy_file: bool = True) -> str:
-
     sample_name = excel["Sample_Name"]
-    sample_number = excel["row_index"]
+    sample_number = excel[SHA_INDEX]
     lane_number = excel.get("Lane")
     if lane_number:
         file_name = (
@@ -122,7 +119,7 @@ def move_fast_q(excel: dict, fastq_f: str) -> None:
     if excel["dry_run"]:
         return
     sample_sheet_path = Path(excel["file_path"]).absolute().parent
-    path_to_fastq = sample_sheet_path / excel["Sample_Project"] / fastq_f
+    path_to_fastq = sample_sheet_path / excel[SH_SM_PROJ] / fastq_f
     destination_of_fastq = Path(excel["fastq_dir"])
     final_fastq_path = destination_of_fastq / fastq_f
     if path_to_fastq.exists():
@@ -175,10 +172,8 @@ def get_flow_cell(path: str) -> str:
 
 
 def basic_reader(path: str) -> list:
-
     with open(path, newline="", encoding="utf-8") as inf:
         reader = csv.DictReader(inf)
-
         return list(reader)
 
 
@@ -237,7 +232,7 @@ def file_parse(path: str, head_identifier="[Data]") -> List[dict]:
             # if mistakes in samplesheet
             if row.get("__colmess"):
                 raise ValueError(f"Sample {row[SH_SAMPLE]} has more columns than header")
-            row["row_index"] = row_index
+            row[SHA_INDEX] = row_index
             row["file_path"] = path
             row_index += 1
             row[SHA_NPATH] = ""
@@ -265,13 +260,13 @@ def run_type(excel: List[dict]) -> List[dict]:
             dt[SHA_RTYPE] = "germline"
         elif len(dt[SH_TUMOR]) >= 1 and dt[SH_NORMAL] == "":
             dt[SHA_RTYPE] = "somatic_single"
-            if dt[SH_TUMOR] == "liquid" and dt[SH_NORMAL] == "":
+            if dt[SH_TUMOR] == "liquid":
                 raise RuntimeError(
                     f"Liquid mode needs normal sample in {dt[SH_SAMPLE]} at {dt[SHA_INDEX]}"
                 )
         elif len(dt[SH_TUMOR]) >= 1 and dt[SH_NORMAL] != "":
             sample_id = dt[SH_SAMPLE]
-            sample_project = dt["Sample_Project"]
+            sample_project = dt[SH_SM_PROJ]
             if check_sample(excel, sample_id, sample_project, dt[SHA_NPATH]):
                 dt[SHA_RTYPE] = "somatic_paired"
             else:
@@ -313,7 +308,7 @@ def check_sample(excel: List[dict], sample_id: str, sample_project: str, sample_
         return False
     # some implicit assumption here that needs to be rechecked
     for dt in excel:
-        if dt[SH_SAMPLE] == sample_id and dt["Sample_Project"] == sample_project:
+        if dt[SH_SAMPLE] == sample_id and dt[SH_SM_PROJ] == sample_project:
             return True
     return False
 
