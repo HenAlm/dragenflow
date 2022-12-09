@@ -266,14 +266,15 @@ def run_type(excel: List[dict]) -> List[dict]:
                 )
         elif len(dt[SH_TUMOR]) >= 1 and dt[SH_NORMAL] != "":
             sample_id = dt[SH_SAMPLE]
+            normal_id = dt[SH_NORMAL]            
             sample_project = dt[SH_SM_PROJ]
-            if check_sample(excel, sample_id, sample_project, dt[SHA_NPATH]):
+            if check_sample(excel, normal_id, sample_project, dt[SHA_NPATH]):
                 dt[SHA_RTYPE] = "somatic_paired"
             else:
                 if dt[SHA_NPATH]:
-                    sample_id = f"{dt[SHA_NPATH]}/{sample_id}"
+                    normal_id = f"{dt[SHA_NPATH]}"
                 raise RuntimeError(
-                    f"sample id {sample_id} doesn't exist at {dt[SHA_INDEX]}"
+                    f"Normal sample {normal_id} doesn't exist for {sample_id} at {dt[SHA_INDEX]}"
                 )
         else:
             raise ValueError(f"invalid entry at index {dt[SHA_INDEX]}")
