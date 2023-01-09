@@ -116,6 +116,7 @@
             "enable-variant-caller": "true",
             "vc-enable-joint-detection": "true",
             "vc-systematic-noise": "{noiseprofile}",
+            "vc-snp-error-cal-bed": "{TargetRegions}",
             "enable-sv": "true",
             "sv-exome": "true",
             "sv-systematic-noise": "{sv_noiseprofile}"
@@ -150,6 +151,7 @@
             "enable-variant-caller": "true",
             "vc-enable-joint-detection": "true",
             "vc-systematic-noise": "{noiseprofile}",
+            "vc-snp-error-cal-bed": "{TargetRegions}",
             "enable-sv": "true",
             "sv-exome": "true"
         },
