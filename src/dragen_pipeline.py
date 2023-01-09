@@ -21,6 +21,7 @@ from .utility.dragen_utility import (
     SH_OVERRIDE,
     SH_PARAM,
     SH_SAMPLE,
+    SH_SM_PROJ,
     SH_TARGET,
     SH_TUMOR,
     SHA_NPATH,
@@ -116,7 +117,7 @@ class ConstructDragenPipeline(Flow):
                 self.add_cnv(excel, cmd_d)
             # store bam file
             self.normals[
-                f"{excel['Sample_Project']}/{excel[SH_SAMPLE]}"
+                f"{excel[SH_SM_PROJ]}/{excel[SH_SAMPLE]}"
             ] = f"../{excel[SH_SAMPLE]}/{cmd_d['output-file-prefix']}"
             cmd_d.update(add_options(excel[SH_OVERRIDE]))
             final_str = dragen_cli(cmd=cmd_d, excel=excel, scripts=scripts)
@@ -141,7 +142,7 @@ class ConstructDragenPipeline(Flow):
                 excel, self.profile, f"{pipeline}_paired_variant_call"
             )
             cmd_d2 = CompositeCommands()
-            normal_prefix = (f"{excel['Sample_Project']}/{excel[SH_NORMAL]}")
+            normal_prefix = (f"{excel[SH_SM_PROJ]}/{excel[SH_NORMAL]}")
             if excel[SHA_NPATH]:
                 normal_prefix = normal_prefix + "/EXTERNAL"
                 self.normals[normal_prefix] = (f"{excel[SHA_NPATH]}/{excel[SH_NORMAL]}")
@@ -184,5 +185,5 @@ class ConstructDragenPipeline(Flow):
         else:
             logging.info(
                 f"No known pipeline run type, problem on \
-                    {excel['Sample_Project']}:{excel.get(SH_SAMPLE)}, skipping"
+                    {excel[SH_SM_PROJ]}:{excel.get(SH_SAMPLE)}, skipping"
             )
