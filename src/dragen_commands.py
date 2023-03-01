@@ -39,6 +39,7 @@ class BaseDragenCommand(Commands):
             "vc-systematic-noise": get_ref_parameter(self.excel,self.template,"noiseprofile"),
             "cnv-population-b-allele-vcf": get_ref_parameter(self.excel,self.template,"pop_b_allele"),
             "sv-systematic-noise": get_ref_parameter(self.excel,self.template,"sv_noiseprofile")
+            "vc-snp-error-cal-bed": self.excel[SH_TARGET],
         }
 
     def construct_commands(self) -> dict:
