@@ -38,8 +38,8 @@ class BaseDragenCommand(Commands):
             "intermediate-results-dir": "/staging/intermediate",
             "vc-systematic-noise": get_ref_parameter(self.excel,self.template,"noiseprofile"),
             "cnv-population-b-allele-vcf": get_ref_parameter(self.excel,self.template,"pop_b_allele"),
-            "sv-systematic-noise": get_ref_parameter(self.excel,self.template,"sv_noiseprofile")
-            "vc-snp-error-cal-bed": self.excel[SH_TARGET],
+            "sv-systematic-noise": get_ref_parameter(self.excel,self.template,"sv_noiseprofile"),
+            "vc-snp-error-cal-bed": self.excel[SH_TARGET]
         }
 
     def construct_commands(self) -> dict:
@@ -67,21 +67,7 @@ class BaseDragenCommand(Commands):
                 self.arg_registry["fastq-file2"] = fastq_file(self.excel, 3)
             self.arg_registry["umi-fastq"] = fastq_file(self.excel, 2, False)
         self.arg_registry["umi-metrics-interval-file"] = excel[SH_TARGET]
-        self.arg_registry["vc-snp-error-cal-bed"] = excel[SH_TARGET]
         return
-
-
-class TumorVariantCommands(Commands):
-    """
-    TumorVariant specific dragen command
-    """
-
-    def __init__(self, tumor: dict) -> None:
-        self.tumor = tumor
-
-    def construct_commands(self) -> dict:
-        cmd_dict = {"tumor-bam-input": f"{self.tumor['output-file-prefix']}_tumor.bam"}
-        return cmd_dict
 
 
 class PairedVariantCommands(Commands):
@@ -89,17 +75,20 @@ class PairedVariantCommands(Commands):
     PairedVariant specific dragen command
     """
 
-    def __init__(self, normal_bam: str, tumor: dict) -> None:
-        self.tumor = tumor
-        self.normal_bam = normal_bam
+    def __init__(self, normal: str, tumor_align: dict, tumor_varc: dict) -> None:
+        self.tumor_a = tumor_align
+        self.tumor_vc = tumor_varc
+        self.normal_pref = normal
 
     def construct_commands(self) -> dict:
         cmd_dict = {}
-        cmd_dict["bam-input"] = self.normal_bam
-        cmd_dict["tumor-bam-input"] = f"{self.tumor['output-file-prefix']}_tumor.bam"
-        cmd_dict["output-file-prefix"] = f"{self.tumor['output-file-prefix']}.tn"
-        cmd_dict["vc-snp-error-cal-bed"] = self.tumor["vc-snp-error-cal-bed"]
+        cmd_dict["bam-input"] = self.tumor_vc["bam-input"].replace("{normal}",self.normal_pref)
+        cmd_dict["tumor-bam-input"] = f"{self.tumor_a['output-file-prefix']}_tumor.bam"
+        cmd_dict["output-file-prefix"] = f"{self.tumor_a['output-file-prefix']}.tn"
+        if "cnv-normal-cnv-vcf" in self.tumor_vc:
+            opts = ["cnv-normal-cnv-vcf","cnv-normal-b-allele-vcf"]
+            for i in opts:
+                cmd_dict[i] = self.tumor_vc[i].replace("{normal}",self.normal_pref)
+        if "vc-snp-error-cal-bed" in self.tumor_vc:
+            cmd_dict["vc-snp-error-cal-bed"] = self.tumor_a["qc-coverage-region-1"]
         return cmd_dict
-
-    def add_error_cal(self, cal_bed:str) -> None:
-        self.tumor["vc-snp-error-cal-bed"] = cal_bed

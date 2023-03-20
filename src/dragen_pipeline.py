@@ -169,8 +169,8 @@ class ConstructDragenPipeline(Flow):
                 arg_string.append(final_str1)
             # step 2 paired variant call
             logging.info(f"{excel[SHA_RTYPE]}: preparing paired variant call template")
-            pv_cmd = PairedVariantCommands(f"{self.normals[normal_prefix]}.bam", cmd_d1)
-            pv_cmd.add_error_cal(excel[SH_TARGET])
+            # pv_cmd = PairedVariantCommands(f"{self.normals[normal_prefix]}.bam", cmd_d1)
+            pv_cmd = PairedVariantCommands(f"{self.normals[normal_prefix]}", cmd_d1, self.profile[f"{pipeline}_paired_variant_call"])
             cmd_d2.add(base_cmd)
             cmd_d2.add(pv_cmd)
             cmd_d=cmd_d2.construct_commands()
