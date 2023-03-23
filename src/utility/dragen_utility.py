@@ -118,14 +118,14 @@ def fastq_file(excel: dict, read_n: int, copy_file: bool = True) -> str:
 def move_fast_q(excel: dict, fastq_f: str) -> None:
     sample_sheet_path = Path(excel["file_path"]).absolute().parent
     path_to_fastq = sample_sheet_path / excel[SH_SM_PROJ] / fastq_f
+    destination_of_fastq = Path(excel["fastq_dir"])
+    final_fastq_path = destination_of_fastq / fastq_f
     if excel["dry_run"]:
-        if not path_to_fastq.exists():
+        if not (path_to_fastq.exists() or final_fastq_path.exists()):
             raise FileNotFoundError(
                 errno.ENOENT, os.strerror(errno.ENOENT), str(path_to_fastq)
             )
         return
-    destination_of_fastq = Path(excel["fastq_dir"])
-    final_fastq_path = destination_of_fastq / fastq_f
     if path_to_fastq.exists():
         # in case if file already exist in destination
         if not final_fastq_path.exists():
