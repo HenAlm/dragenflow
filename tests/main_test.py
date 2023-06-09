@@ -15,7 +15,7 @@ def test_parse_file(get_handle):
     assert type(list_dict) == list
     # check for number of rows in the excel file its 12 row
     assert len(list_dict) == 13
-    assert "file_path" in list_dict[0].keys()
+    assert "_file_path" in list_dict[0].keys()
     # index of first germline in test samplesheet
     assert list_dict[1]["row_index"] == 3
 

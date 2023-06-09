@@ -12,7 +12,7 @@ def excel_dict():
         "SampleID": "test_sampleID",
         "Sample_Name": "testsample1.5",
         "pipeline_parameters": "genome",
-        "file_path": "./path/210317_A00464_0300_BHW7FTDMXX/test_samplesheet.csv",
+        "_file_path": "./path/210317_A00464_0300_BHW7FTDMXX/test_samplesheet.csv",
         "Sample_Project": "testproject",
         "fastq_dir": "./path/210317_A00464_0300_BHW7FTDMXX/testsample",
         "Lane": 1,

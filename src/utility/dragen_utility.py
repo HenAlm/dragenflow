@@ -11,6 +11,7 @@ import logging
 # values for the samplesheet columns, SH_ for ones in file, SHA_ for added constructs
 SHA_INDEX = 'row_index'
 SHA_NPATH = "_normal_sample_path"
+SHA_SSFPATH = '_file_path'
 SHA_RTYPE = "_run_type"
 SHA_TRG_NAME = "_target_name"
 SH_NORMAL = "matching_normal_sample"
@@ -67,7 +68,7 @@ def set_fileprefix(excel: dict) -> str:
 
 
 def set_rgid(excel: dict) -> str:
-    sample_sheet_path = excel["file_path"]
+    sample_sheet_path = excel[SHA_SSFPATH]
     flow_cell_id = get_flow_cell(sample_sheet_path)
     if excel.get("Lane"):
         flow_cell_id = f"{flow_cell_id}-{excel.get('Lane')}"
@@ -90,7 +91,7 @@ def create_fastq_dir(excel: list, dry_run: bool = False) -> List[dict]:
     for row in excel:
         if row["pipeline"].lower() != "dragen":
             continue
-        path = Path(row["file_path"]).absolute()
+        path = Path(row[SHA_SSFPATH]).absolute()
         sample_id = row[SH_SAMPLE] if row.get(SH_SAMPLE) else row["Sample_ID"]
         new_path = path.parent / row[SH_SM_PROJ] / sample_id
         if not dry_run:
@@ -116,7 +117,7 @@ def fastq_file(excel: dict, read_n: int, copy_file: bool = True) -> str:
 
 
 def move_fast_q(excel: dict, fastq_f: str) -> None:
-    sample_sheet_path = Path(excel["file_path"]).absolute().parent
+    sample_sheet_path = Path(excel[SHA_SSFPATH]).absolute().parent
     path_to_fastq = sample_sheet_path / excel[SH_SM_PROJ] / fastq_f
     destination_of_fastq = Path(excel["fastq_dir"])
     final_fastq_path = destination_of_fastq / fastq_f
@@ -237,7 +238,7 @@ def file_parse(path: str, head_identifier="[Data]") -> List[dict]:
             if row.get("__colmess"):
                 raise ValueError(f"Sample {row[SH_SAMPLE]} has more columns than header")
             row[SHA_INDEX] = row_index
-            row["file_path"] = path
+            row[SHA_SSFPATH] = path
             row_index += 1
             row[SHA_NPATH] = ""
             if SH_NORMAL in row and row[SH_NORMAL] and row[SH_NORMAL].startswith('/'):
