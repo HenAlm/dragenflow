@@ -17,8 +17,10 @@
             "enable-variant-caller": "true",
             "vc-enable-joint-detection": "true",
             "enable-sv": "true",
+            "enable-variant-deduplication": "true",
             "enable-cnv": "true",
-            "cnv-enable-self-normalization": "true"
+            "cnv-enable-self-normalization": "true",
+            "repeat-genotype-enable": "true"
         },
         "genome_tumor_pipeline": {
             "ref-dir": "{refgenome}",
@@ -37,13 +39,16 @@
             "enable-variant-caller": "true",
             "vc-enable-joint-detection": "true",
             "vc-systematic-noise": "{noiseprofile}",
+            "vc-enable-unequal-ntd-errors": "auto",
             "enable-sv": "true",
             "sv-systematic-noise": "{sv_noiseprofile}",
+            "enable-variant-deduplication": "true",
             "enable-cnv": "true",
             "cnv-enable-self-normalization": "true",
-            "cnv-population-b-allele-vcf": "{pop_b_allele}"
+            "cnv-population-b-allele-vcf": "{pop_b_allele}",
+            "repeat-genotype-enable": "true"
         },
-        "genome_tumor_alignment": {
+        "genome_tumor_normal": {
             "ref-dir": "{refgenome}",
             "intermediate-results-dir": "{staging}",
             "output-directory": ".",
@@ -52,25 +57,21 @@
             "tumor-fastq2": "{read2}",
             "RGID-tumor": "{rgid}",
             "RGSM-tumor": "{rgsm}",
+            "fastq-file1": "{read1}",
+            "fastq-file2": "{read2}",
+            "RGID": "{rgid}",
+            "RGSM": "{rgsm}",
             "read-trimmers": "quality,polyg",
             "trim-min-quality": 3,
             "soft-read-trimmers": "none",
             "enable-sort": "true",
             "enable-duplicate-marking": "true",
             "enable-map-align-output": "true",
-            "enable-variant-caller": "false"
-        },
-        "genome_paired_variant_call": {
-            "ref-dir": "{refgenome}",
-            "intermediate-results-dir": "{staging}",
-            "output-directory": ".",
-            "output-file-prefix": "{outprefix}",
-            "tumor-bam-input": "{tumorbam}",
-            "bam-input": "{normal}.bam",
-            "enable-map-align": "false",
             "enable-variant-caller": "true",
             "vc-enable-joint-detection": "true",
             "vc-systematic-noise": "{noiseprofile}",
+            "vc-enable-unequal-ntd-errors": "auto",
+            "enable-variant-deduplication": "true",
             "enable-sv": "true",
             "enable-cnv": "true",
             "cnv-normal-cnv-vcf": "{normal}.cnv.vcf.gz",
@@ -94,6 +95,7 @@
             "vc-enable-joint-detection": "true",
             "enable-sv": "true",
             "sv-exome": "true",
+            "enable-variant-deduplication": "true",
             "qc-coverage-reports-1": "full_res",
             "qc-coverage-region-1": "{TargetRegions}"
         },
@@ -119,9 +121,10 @@
             "vc-snp-error-cal-bed": "{TargetRegions}",
             "enable-sv": "true",
             "sv-exome": "true",
+            "enable-variant-deduplication": "true",
             "sv-systematic-noise": "{sv_noiseprofile}"
         },
-        "exome_tumor_alignment": {
+        "exome_tumor_normal": {
             "ref-dir": "{refgenome}",
             "intermediate-results-dir": "{staging}",
             "output-directory": ".",
@@ -130,29 +133,24 @@
             "tumor-fastq2": "{read2}",
             "RGID-tumor": "{rgid}",
             "RGSM-tumor": "{rgsm}",
+            "fastq-file1": "{read1}",
+            "fastq-file2": "{read2}",
+            "RGID": "{rgid}",
+            "RGSM": "{rgsm}",
             "read-trimmers": "quality,polyg",
             "trim-min-quality": 3,
             "soft-read-trimmers": "none",
             "enable-sort": "true",
             "enable-duplicate-marking": "true",
             "enable-map-align-output": "true",
-            "enable-variant-caller": "false",
             "qc-coverage-reports-1": "full_res",
-            "qc-coverage-region-1": "{TargetRegions}"
-        },
-        "exome_paired_variant_call": {
-            "ref-dir": "{refgenome}",
-            "intermediate-results-dir": "{staging}",
-            "output-directory": ".",
-            "output-file-prefix": "{outprefix}",
-            "tumor-bam-input": "{tumorbam}",
-            "bam-input": "{normal}.bam",
-            "enable-map-align": "false",
+            "qc-coverage-region-1": "{TargetRegions}",
             "enable-variant-caller": "true",
             "vc-enable-joint-detection": "true",
             "vc-systematic-noise": "{noiseprofile}",
             "vc-snp-error-cal-bed": "{TargetRegions}",
             "enable-sv": "true",
+            "enable-variant-deduplication": "true",
             "sv-exome": "true"
         },
         "umi_normal_pipeline": {
@@ -197,6 +195,7 @@
             "enable-sv": "true",
             "sv-exome": "true",
             "sv-systematic-noise": "{sv_noiseprofile}",
+            "enable-variant-deduplication": "true",
             "umi-enable": "true",
             "umi-library-type": "random-simplex",
             "umi-min-supporting-reads": "1",
@@ -287,6 +286,7 @@
             "vc-snp-error-cal-bed": "{TargetRegions}",
             "enable-sv": "true",
             "sv-exome": "true",
+            "enable-variant-deduplication": "true",
             "umi-enable": "true",
             "umi-library-type": "random-duplex",
             "umi-min-supporting-reads": "2",
@@ -334,7 +334,8 @@
             "vc-enable-joint-detection": "true",
             "vc-systematic-noise": "{noiseprofile}",
             "enable-sv": "true",
-            "sv-exome": "true"
+            "sv-exome": "true",
+            "enable-variant-deduplication": "true"
         },
         "ref_parameters": {
             "RefGenome": {
