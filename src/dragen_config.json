@@ -244,6 +244,7 @@
             "vc-systematic-noise": "{noiseprofile}",
             "enable-sv": "true",
             "sv-exome": "true",
+            "enable-variant-deduplication": "true",
             "enable-cnv": "false"
         },
         "umi_duplex_normal_pipeline": {
