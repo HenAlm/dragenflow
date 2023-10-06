@@ -3,7 +3,6 @@ import copy
 from .utility.commands import Commands
 from .utility.dragen_utility import (
     fastq_file,
-    get_ref,
     set_fileprefix,
     set_rgid,
     set_rgism,
@@ -29,16 +28,12 @@ class BaseDragenCommand(Commands):
             "tumor-fastq2": fastq_file(self.excel, 2),
             "output-file-prefix": set_fileprefix(self.excel),
             "qc-coverage-region-1": self.excel[SH_TARGET],
-            "ref-dir": get_ref(self.excel, self.template),
             "RGID": set_rgid(self.excel),
             "RGSM": set_rgism(self.excel),
             "RGID-tumor": set_rgid(self.excel),
             "RGSM-tumor": set_rgism(self.excel),
             # depending on the use case this can be directly added to json-template file
             "intermediate-results-dir": "/staging/intermediate",
-            "vc-systematic-noise": get_ref_parameter(self.excel,self.template,"noiseprofile"),
-            "cnv-population-b-allele-vcf": get_ref_parameter(self.excel,self.template,"pop_b_allele"),
-            "sv-systematic-noise": get_ref_parameter(self.excel,self.template,"sv_noiseprofile"),
             "vc-snp-error-cal-bed": self.excel[SH_TARGET]
         }
 
@@ -51,10 +46,13 @@ class BaseDragenCommand(Commands):
         if len(param_list) == 0:
             raise RuntimeError("Something wrong with parsing template")
         for val in param_list:
-            try:
+            if val in self.arg_registry:
                 cmd_dict2[val] = self.arg_registry.get(val)
-            except KeyError:
-                print(f"missing key {val}: in registry")
+            else:
+                tmp = cmd_dict2[val][1:-1]
+                cmd_dict2[val] = get_ref_parameter(self.excel,self.template,tmp)
+            if cmd_dict2[val] == "":
+                print(f"missing key '{val}' in registry or '{cmd_dict2[val]}' in ref_parameters")
                 continue
         return cmd_dict2
 

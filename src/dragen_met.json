@@ -51,7 +51,7 @@
     "ref_parameters": {
         "RefGenome": {
             "GRCh38": {
-                "ref-dir": "reference"
+                "refgenome": "reference"
             }
         },
         "target": {

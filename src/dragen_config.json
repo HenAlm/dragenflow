@@ -341,7 +341,7 @@
         "ref_parameters": {
             "RefGenome": {
                 "GRCh38": {
-                    "ref-dir": "reference path",
+                    "refgenome": "reference path",
                     "noiseprofile": "noise profile path",
                     "pop_b_allele": "pop_b_allele path",
                     "sv_noiseprofile": "structural variant noise profile path"

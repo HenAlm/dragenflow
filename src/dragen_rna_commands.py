@@ -1,7 +1,6 @@
 import copy
 from src.utility.dragen_utility import (
     fastq_file,
-    get_ref,
     set_fileprefix,
     set_rgid,
     set_rgism,
@@ -20,15 +19,12 @@ class BaseDragenRnaCommand(Commands):
         self.template = template
         self.seq_pipeline = seq_pipeline
         self.arg_registry = {
-            "ref-dir": get_ref(self.excel, self.template),
             "intermediate-results-dir": "/staging/intermediate",
             "output-file-prefix": set_fileprefix(self.excel),
             "tumor-fastq1": fastq_file(self.excel, 1),
             "tumor-fastq2": fastq_file(self.excel, 2),
             "RGID-tumor": set_rgid(self.excel),
-            "RGSM-tumor": set_rgism(self.excel),
-            "annotation-file": get_ref_parameter(excel,template,"gtf"),
-            "rrna-filter-contig": get_ref_parameter(excel,template,"rrna-contig"),
+            "RGSM-tumor": set_rgism(self.excel)
         }
 
     def construct_commands(self) -> dict:
@@ -39,10 +35,13 @@ class BaseDragenRnaCommand(Commands):
         if len(param_list) == 0:
             raise RuntimeError("Someting went wrong with parsing template")
         for val in param_list:
-            try:
+            if val in self.arg_registry:
                 cmd_dict[val] = self.arg_registry.get(val)
-            except KeyError:
-                print(f"missing key {val}: in registry")
+            else:
+                tmp = cmd_dict[val][1:-1]
+                cmd_dict[val] = get_ref_parameter(self.excel,self.template,tmp)
+            if cmd_dict[val] == "":
+                print(f"missing key '{val}' in registry or '{cmd_dict[val]}' in ref_parameters")
                 continue
         return cmd_dict
 

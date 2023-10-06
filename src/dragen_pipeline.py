@@ -57,6 +57,8 @@ class ConstructDragenPipeline(Flow):
         cmd["vc-enable-liquid-tumor-mode"] = "true"
         if "vc-enable-umi-solid" in cmd:
             cmd["vc-enable-umi-solid"] = "false"
+        if "msi-coverage-threshold" in cmd:
+            cmd["msi-coverage-threshold"] = 500
         return cmd
 
     def command_with_trim(self, excel: dict, pipe_elem: str) -> dict:

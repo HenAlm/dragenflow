@@ -1,7 +1,6 @@
 import copy
 from src.utility.dragen_utility import (
     fastq_file,
-    get_ref,
     get_ref_parameter,
     set_fileprefix,
     set_rgid,
@@ -21,7 +20,6 @@ class BaseDragenMetCommand(Commands):
         self.template = template
         self.seq_pipeline = seq_pipeline
         self.arg_registry = {
-            "ref-dir": get_ref(self.excel, self.template),
             "intermediate-results-dir": "/staging/intermediate",
             "output-file-prefix": set_fileprefix(self.excel),
             "fastq-file1": fastq_file(self.excel, 1),
@@ -39,10 +37,13 @@ class BaseDragenMetCommand(Commands):
         if len(param_list) == 0:
             raise RuntimeError("Someting went wrong with parsing template")
         for val in param_list:
-            try:
+            if val in self.arg_registry:
                 cmd_dict[val] = self.arg_registry.get(val)
-            except KeyError:
-                print(f"missing key {val}: in registry")
+            else:
+                tmp = cmd_dict[val][1:-1]
+                cmd_dict[val] = get_ref_parameter(self.excel,self.template,tmp)
+            if cmd_dict[val] == "":
+                print(f"missing key '{val}' in registry or '{cmd_dict[val]}' in ref_parameters")
                 continue
         return cmd_dict
 

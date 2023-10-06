@@ -56,12 +56,6 @@ def load_json(file: str = "config.json") -> dict:
     return configs
 
 
-def get_ref(excel: dict, template: dict) -> str:
-    k_ = excel["RefGenome"]
-    ref = template["ref_parameters"]["RefGenome"][k_]
-    return ref["ref-dir"]
-
-
 def set_fileprefix(excel: dict) -> str:
     sample_id = excel[SH_SAMPLE] if excel.get(SH_SAMPLE) else excel["Sample_ID"]
     return sample_id
