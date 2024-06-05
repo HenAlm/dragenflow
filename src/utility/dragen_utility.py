@@ -153,7 +153,7 @@ def dragen_cli(
     dragen_cmd = f"dragen {default_str}"
     if scripts:
         dragen_cmd = f"{scripts['pre']}\ndragen {default_str}\n{scripts['post']}"
-    final_str = f"grun.py -n {grun_name} -L logs -q dragen.q -c '{dragen_cmd}'" # noqa: E501, B950
+    final_str = f"srun.py -n {grun_name} -L logs -q dragen.q -c '{dragen_cmd}'" # noqa: E501, B950
     return final_str
 
 
