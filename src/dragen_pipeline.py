@@ -16,6 +16,7 @@ from .utility.dragen_utility import (
     load_json,
     script_path,
     trim_options,
+    is_between_0_1,
     OPT_T_ANALYSIS,
     OPT_T_ALIGN,
     SH_NORMAL,
@@ -49,15 +50,18 @@ class ConstructDragenPipeline(Flow):
         cmd["enable-cnv"] = "true"
         return True
 
-    def check_liquid_tumor(self, excel: dict) -> dict:
+    def check_liquid_tumor(self, excel: dict, cmd_original: dict) -> dict:
         cmd = dict()
-        if excel[SH_TUMOR] != "liquid":
+        if excel[SH_TUMOR] != "liquid" and not is_between_0_1(excel[SH_TUMOR]):
             return cmd
+        if is_between_0_1(excel[SH_TUMOR]):
+            cmd["vc-tin-contam-tolerance"] = excel[SH_TUMOR]
+            cmd["sv-tin-contam-tolerance"] = excel[SH_TUMOR]
         cmd["sv-enable-liquid-tumor-mode"] = "true"
         cmd["vc-enable-liquid-tumor-mode"] = "true"
-        if "vc-enable-umi-solid" in cmd:
+        if "vc-enable-umi-solid" in cmd_original:
             cmd["vc-enable-umi-solid"] = "false"
-        if "msi-coverage-threshold" in cmd:
+        if "msi-coverage-threshold" in cmd_original:
             cmd["msi-coverage-threshold"] = 500
         return cmd
 
@@ -164,7 +168,6 @@ class ConstructDragenPipeline(Flow):
                 logging.info(f"{excel[SHA_RTYPE]}: executing tumor_pipeline")
                 cmd_d = self.command_with_trim(excel, "tumor_pipeline")
                 self.add_cnv(excel, cmd_d)
-            cmd_d.update(self.check_liquid_tumor(excel))
             cmd_d.update(add_options(excel[SH_OVERRIDE]))
             final_str = dragen_cli(cmd=cmd_d, excel=excel, scripts=scripts)
             return [final_str]
@@ -197,7 +200,7 @@ class ConstructDragenPipeline(Flow):
                 cmd_d2.add(base_cmd)
                 cmd_d2.add(pv_cmd)
                 cmd_d=cmd_d2.construct_commands()
-                cmd_d.update(self.check_liquid_tumor(excel))
+                cmd_d.update(self.check_liquid_tumor(excel, cmd_d))
                 cmd_d.update(add_options(excel[SH_OVERRIDE],OPT_T_ANALYSIS))
                 final_str2 = dragen_cli(
                     cmd=cmd_d, excel=excel, postf="analysis", scripts=scripts,
@@ -209,6 +212,7 @@ class ConstructDragenPipeline(Flow):
                 cmd = self.command_with_trim(excel, "tumor_normal")
                 if self.add_cnv(excel, cmd):
                     self.sample_pon(normal_prefix, excel["dry_run"], excel["fastq_dir"], cmd)
+                cmd.update(self.check_liquid_tumor(excel, cmd))
                 cmd.update(add_options(excel[SH_OVERRIDE],OPT_T_ALIGN))
                 cmd.update(self.get_normal_params(normal_prefix))
                 final_str = dragen_cli(cmd=cmd, excel=excel, scripts=scripts)

@@ -246,6 +246,13 @@ def file_parse(path: str, head_identifier="[Data]") -> List[dict]:
         return reader
 
 
+def is_between_0_1(test_str: str) -> bool:
+    try:
+        N = float(test_str)
+        return (N > 0) and (N < 1)
+    except ValueError:
+        return False
+
 def run_type(excel: List[dict]) -> List[dict]:
     for dt in excel:
         if dt[SH_PARAM] == "rna" or dt[SH_PARAM].startswith("methylation"):
@@ -259,7 +266,7 @@ def run_type(excel: List[dict]) -> List[dict]:
             dt[SHA_RTYPE] = "germline"
         elif len(dt[SH_TUMOR]) >= 1 and dt[SH_NORMAL] == "":
             dt[SHA_RTYPE] = "somatic_single"
-            if dt[SH_TUMOR] == "liquid":
+            if dt[SH_TUMOR] == "liquid" or is_between_0_1(dt[SH_TUMOR]):
                 raise RuntimeError(
                     f"Liquid mode needs normal sample in {dt[SH_SAMPLE]} at {dt[SHA_INDEX]}"
                 )
